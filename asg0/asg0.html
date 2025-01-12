@@ -27,9 +27,27 @@
 
     <label for="v2_y">y</label>
     <input type="text" id="v2_y" name="v2_y" required minlength="1" maxlength="8" size="10" />
-    <!-- draw button -->
+    <!-- vector draw button -->
     <br><br>
     <input type="button" value="Draw" onclick="handleDrawEvent()"></input>
+    <!-- selector -->
+    <br><br>
+    <label for="vector-select">Operation:</label>
+    <select name="vector-select" id="vector-select">
+        <option value="">--Please choose an option--</option>
+        <option value="add">Add</option>
+        <option value="sub">Sub</option>
+        <option value="mul">Multiply</option>
+        <option value="div">Divide</option>
+        <!-- <option value="spider">Spider</option>
+        <option value="goldfish">Goldfish</option> -->
+    </select>
+    <!-- scalar -->
+    <label for="scalar">Scalar:</label>
+    <input type="text" id="scalar" name="scalar" required minlength="1" maxlength="8" size="10" />
+    <!-- selector draw button-->
+    <br><br>
+    <input type="button" value="Draw" onclick="handleDrawOperation()"></input>
 </body>
 
 </html>

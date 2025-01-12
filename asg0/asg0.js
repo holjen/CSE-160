@@ -29,11 +29,37 @@ function drawVector(v, color) {
     ctx.stroke(); // Render the path
 }
 
+function createVector3(x_id, y_id) {
+    return new Vector3([document.getElementById(x_id).value, document.getElementById(y_id).value, 0]);
+}
 function handleDrawEvent() {
     ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-    var v1 = new Vector3([document.getElementById("v1_x").value, document.getElementById("v1_y").value, 0]);
+    var v1 = createVector3("v1_x", "v1_y");
+    var v2 = createVector3("v2_x", "v2_y");
     drawVector(v1, "red");
-
-    var v2 = new Vector3([document.getElementById("v2_x").value, document.getElementById("v2_y").value, 0]);
     drawVector(v2, "blue");
+}
+
+function handleDrawOperation() {
+    ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    var v1 = createVector3("v1_x", "v1_y");
+    var v2 = createVector3("v2_x", "v2_y");
+    drawVector(v1, "red");
+    drawVector(v2, "blue");
+    let operation = document.getElementById("vector-select").value;
+    let scalar = document.getElementById("scalar").value;
+    if (operation === "add") {
+        drawVector(v1.add(v2), "green");
+    }
+    else if (operation === "sub") {
+        drawVector(v1.sub(v2), "green");
+    }
+    else if (operation === "mul") {
+        drawVector(v1.mul(scalar), "green");
+        drawVector(v2.mul(scalar), "green");
+    }
+    else if (operation === "div") {
+        drawVector(v1.div(scalar), "green");
+        drawVector(v2.div(scalar), "green");
+    }
 }
