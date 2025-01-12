@@ -11,6 +11,25 @@
         Please use a browser that supports "canvas"
     </canvas>
     <script src="asg0.js"></script>
+    <script src="./lib/cuon-matrix-cse160.js"></script>
+    <!-- user usable buttons -->
+    <!-- vector 1 -->
+    <br><br>
+    <label for="v1_x">v1: x</label>
+    <input type="text" id="v1_x" name="v1_x" required minlength="1" maxlength="8" size="10" />
+
+    <label for="v1_y">y</label>
+    <input type="text" id="v1_y" name="v1_y" required minlength="1" maxlength="8" size="10" />
+    <!-- vector 2 -->
+    <br><br>
+    <label for="v2_x">v2: x</label>
+    <input type="text" id="v2_x" name="v2_x" required minlength="1" maxlength="8" size="10" />
+
+    <label for="v2_y">y</label>
+    <input type="text" id="v2_y" name="v2_y" required minlength="1" maxlength="8" size="10" />
+    <!-- draw button -->
+    <br><br>
+    <input type="button" value="Draw" onclick="handleDrawEvent()"></input>
 </body>
 
 </html>
