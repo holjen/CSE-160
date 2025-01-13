@@ -40,6 +40,16 @@ function handleDrawEvent() {
     drawVector(v2, "blue");
 }
 
+function angleBetween(v1, v2) {
+    var dot = Vector3.dot(v1, v2);
+    return Math.acos(dot / (v1.magnitude() * v2.magnitude())) * (180 / Math.PI);
+}
+
+function areaTriangle(v1, v2) {
+    var v3 = Vector3.cross(v1, v2);
+    return .5 * v3.magnitude();
+}
+
 function handleDrawOperation() {
     ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     var v1 = createVector3("v1_x", "v1_y");
@@ -61,5 +71,19 @@ function handleDrawOperation() {
     else if (operation === "div") {
         drawVector(v1.div(scalar), "green");
         drawVector(v2.div(scalar), "green");
+    }
+    else if (operation === "mag") {
+        console.log("Magnitude v1: " + v1.magnitude())
+        console.log("Magnitude v2: " + v2.magnitude())
+    }
+    else if (operation === "norm") {
+        drawVector(v1.normalize(), "green");
+        drawVector(v2.normalize(), "green");
+    }
+    else if (operation === "angle") {
+        console.log("Angle: " + angleBetween(v1, v2));
+    }
+    else if (operation === "area") {
+        console.log("Area of the triangle: " + areaTriangle(v1, v2));
     }
 }
