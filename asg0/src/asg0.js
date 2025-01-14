@@ -1,5 +1,5 @@
 
-// DrawRectangle.js
+// Jennie Lin, jlin216@ucsc.edu
 function main() {
     // Retrieve <canvas> element <- (1)
     canvas = document.getElementById('example');
