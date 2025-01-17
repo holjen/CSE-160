@@ -19,6 +19,7 @@ var FSHADER_SOURCE = `
 // CONSTS
 const POINT = 0;
 const TRIANGLE = 1;
+const CIRCLE = 2;
 
 // Global Variables
 let canvas;
@@ -29,6 +30,7 @@ let u_Size;
 let g_shapesList = [];
 let g_selectedColor = [1.0, 1.0, 1.0, 1.0];
 let g_selectedSize = 20;
+let g_selectedSeg = 15;
 let g_selectedType = POINT;
 
 function setupWebGL() {
@@ -102,6 +104,9 @@ function click(ev) {
     point = new Point();
   } else if (g_selectedType==TRIANGLE) {
     point = new Triangle();
+  } else if (g_selectedType==CIRCLE) {
+    point = new Circle();
+    point.segments = g_selectedSeg;
   }
   point.position=[x, y];
   point.color=g_selectedColor.slice();
@@ -124,6 +129,9 @@ function addActionsForHtmlUI() {
   // Shape Button
   document.getElementById('Point').onclick = function () { g_selectedType = POINT; };
   document.getElementById('Triangle').onclick = function () { g_selectedType = TRIANGLE; };
+  document.getElementById('Circle').onclick = function () { g_selectedType = CIRCLE; };
+  // Circle segment count
+  document.getElementById('Segment').addEventListener('mouseup', function () { g_selectedSeg = this.value; });
 }
 
 function main() {
