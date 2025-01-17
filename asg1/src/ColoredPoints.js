@@ -16,6 +16,10 @@ var FSHADER_SOURCE = `
     gl_FragColor = u_FragColor;
   }`;
 
+// CONSTS
+const POINT = 0;
+const TRIANGLE = 1;
+
 // Global Variables
 let canvas;
 let gl;
@@ -25,6 +29,7 @@ let u_Size;
 let g_shapesList = [];
 let g_selectedColor = [1.0, 1.0, 1.0, 1.0];
 let g_selectedSize = 20;
+let g_selectedType = POINT;
 
 function setupWebGL() {
   // Retrieve <canvas> element
@@ -92,7 +97,12 @@ function click(ev) {
   [x, y] = convertMouseCoordinatesToGL(ev);
 
   // Store the point into the shapesList
-  let point = new Point();
+  let point;
+  if (g_selectedType==POINT) {
+    point = new Point();
+  } else if (g_selectedType==TRIANGLE) {
+    point = new Triangle();
+  }
   point.position=[x, y];
   point.color=g_selectedColor.slice();
   point.size=g_selectedSize;
@@ -111,6 +121,9 @@ function addActionsForHtmlUI() {
   document.getElementById('Size').addEventListener('mouseup', function () { g_selectedSize = this.value; });
   // Clear Button
   document.getElementById('Clear').onclick = function(){g_shapesList=[]; renderAllShapes();};
+  // Shape Button
+  document.getElementById('Point').onclick = function () { g_selectedType = POINT; };
+  document.getElementById('Triangle').onclick = function () { g_selectedType = TRIANGLE; };
 }
 
 function main() {
