@@ -20,6 +20,7 @@ var FSHADER_SOURCE = `
 const POINT = 0;
 const TRIANGLE = 1;
 const CIRCLE = 2;
+const CNY = 3;
 
 // Global Variables
 let canvas;
@@ -108,6 +109,7 @@ function click(ev) {
     point = new Circle();
     point.segments = g_selectedSeg;
   }
+  console.log([x,y]);
   point.position=[x, y];
   point.color=g_selectedColor.slice();
   point.size=g_selectedSize;
@@ -130,6 +132,8 @@ function addActionsForHtmlUI() {
   document.getElementById('Point').onclick = function () { g_selectedType = POINT; };
   document.getElementById('Triangle').onclick = function () { g_selectedType = TRIANGLE; };
   document.getElementById('Circle').onclick = function () { g_selectedType = CIRCLE; };
+  // New Year Drawing Button
+  document.getElementById('Cny').onclick = function () { drawCny(); };
   // Circle segment count
   document.getElementById('Segment').addEventListener('mouseup', function () { g_selectedSeg = this.value; });
 }
@@ -149,4 +153,5 @@ function main() {
 
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT);
+  drawCny();
 }
