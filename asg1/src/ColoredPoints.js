@@ -30,22 +30,22 @@ let a_Position;
 let u_FragColor;
 let u_Size;
 let g_shapesList = [];
-let g_selectedColor = [.5,.5,.5, 1.0];
+let g_selectedColor = [.5, .5, .5, 1.0];
 let g_selectedSize = 20;
 let g_selectedSeg = 15;
 let g_selectedType = POINT;
 
 function setupColorPicker() {
-  color_canvas= document.getElementById('color');
-  color_gl = color_canvas.getContext("webgl", {preserveDrawingBuffer: true});
+  color_canvas = document.getElementById('color');
+  color_gl = color_canvas.getContext("webgl", { preserveDrawingBuffer: true });
   if (!color_gl) {
     console.log('Failed to get the rendering context for color WebGL');
     return;
   }
 }
 
-function refreshColorPicker(){
-  color_gl.clearColor(g_selectedColor[0],g_selectedColor[1], g_selectedColor[2], g_selectedColor[3]);
+function refreshColorPicker() {
+  color_gl.clearColor(g_selectedColor[0], g_selectedColor[1], g_selectedColor[2], g_selectedColor[3]);
 
   // Clear <canvas>
   color_gl.clear(gl.COLOR_BUFFER_BIT);
@@ -58,7 +58,7 @@ function setupWebGL() {
 
   // Get the rendering context for WebGL
   // gl = getWebGLContext(canvas);
-  gl = canvas.getContext("webgl", {preserveDrawingBuffer: true});
+  gl = canvas.getContext("webgl", { preserveDrawingBuffer: true });
   if (!gl) {
     console.log('Failed to get the rendering context for WebGL');
     return;
@@ -122,18 +122,18 @@ function click(ev) {
 
   // Store the point into the shapesList
   let point;
-  if (g_selectedType==POINT) {
+  if (g_selectedType == POINT) {
     point = new Point();
-  } else if (g_selectedType==TRIANGLE) {
+  } else if (g_selectedType == TRIANGLE) {
     point = new Triangle();
-  } else if (g_selectedType==CIRCLE) {
+  } else if (g_selectedType == CIRCLE) {
     point = new Circle();
     point.segments = g_selectedSeg;
   }
-  console.log([x,y]);
-  point.position=[x, y];
-  point.color=g_selectedColor.slice();
-  point.size=g_selectedSize;
+  console.log([x, y]);
+  point.position = [x, y];
+  point.color = g_selectedColor.slice();
+  point.size = g_selectedSize;
   g_shapesList.push(point);
 
   // Redraws all shapes onto the canvas
@@ -142,20 +142,20 @@ function click(ev) {
 
 function addActionsForHtmlUI() {
   // RGB Sliders
-  document.getElementById('Red').addEventListener('mouseup', function () { g_selectedColor[0] = this.value / 100; refreshColorPicker();});
-  document.getElementById('Green').addEventListener('mouseup', function () { g_selectedColor[1] = this.value / 100; refreshColorPicker();});
-  document.getElementById('Blue').addEventListener('mouseup', function () { g_selectedColor[2] = this.value / 100;refreshColorPicker(); });
-  document.getElementById('Opacity').addEventListener('mouseup', function () { g_selectedColor[3] = this.value / 100; refreshColorPicker();});
+  document.getElementById('Red').addEventListener('mouseup', function () { g_selectedColor[0] = this.value / 100; refreshColorPicker(); });
+  document.getElementById('Green').addEventListener('mouseup', function () { g_selectedColor[1] = this.value / 100; refreshColorPicker(); });
+  document.getElementById('Blue').addEventListener('mouseup', function () { g_selectedColor[2] = this.value / 100; refreshColorPicker(); });
+  document.getElementById('Opacity').addEventListener('mouseup', function () { g_selectedColor[3] = this.value / 100; refreshColorPicker(); });
   // Size Slider
   document.getElementById('Size').addEventListener('mouseup', function () { g_selectedSize = this.value; });
   // Clear Button
-  document.getElementById('Clear').onclick = function(){g_shapesList=[]; renderAllShapes();};
+  document.getElementById('Clear').onclick = function () { g_shapesList = []; renderAllShapes(); };
   // Shape Button
   document.getElementById('Point').onclick = function () { g_selectedType = POINT; };
   document.getElementById('Triangle').onclick = function () { g_selectedType = TRIANGLE; };
   document.getElementById('Circle').onclick = function () { g_selectedType = CIRCLE; };
   // New Year Drawing Button
-  document.getElementById('Cny').onclick = function () { g_shapesList=[];renderAllShapes(); drawCny(); };
+  document.getElementById('Cny').onclick = function () { g_shapesList = []; renderAllShapes(); drawCny(); };
   // Circle segment count
   document.getElementById('Segment').addEventListener('mouseup', function () { g_selectedSeg = this.value; });
 }
@@ -169,7 +169,7 @@ function main() {
 
   addActionsForHtmlUI();
   // Register function (event handler) to be called on a mouse press
-  canvas.onmousemove = function(ev) {if (ev.buttons == 1) {click(ev)}};
+  canvas.onmousemove = function (ev) { if (ev.buttons == 1) { click(ev) } };
 
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);

@@ -17,8 +17,8 @@ class Triangle {
         // Pass the size of the shape
         gl.uniform1f(u_Size, size);
         // Draw
-        var delta = size/400
-        drawTriangles([xy[0], xy[1]+delta, xy[0] - delta, xy[1]- delta, xy[0]+delta, xy[1] - delta])
+        var delta = size / 400
+        drawTriangles([xy[0], xy[1] + delta, xy[0] - delta, xy[1] - delta, xy[0] + delta, xy[1] - delta])
     }
 }
 
