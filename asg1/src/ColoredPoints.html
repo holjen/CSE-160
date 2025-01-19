@@ -7,14 +7,18 @@
 </head>
 
 <body onload="main()">
-  <canvas id="webgl" width="400" height="400">
-    Please use a browser that supports "canvas"
-  </canvas>
+  <div style="display: flex; align-items: center;">
+    <canvas id="webgl" width="400" height="400">
+      Please use a browser that supports "canvas"
+    </canvas>
+    <div id="image-container" style="position: relative; width: 300px; height: 300px; margin-left: 50px;">
+      <img src="snake.jpg" alt="Snake" style="width: 100%; height: 100%; object-fit: cover;" />
+    </div>
+  </div>
   <!-- Cny Button -->
   <br><br>
   <button type="button" id="Cny">New Year!</button>
   <!-- Clear Button -->
-  <br><br>
   <button type="button" id="Clear">Clear</button>
   <!-- Shape Type Buttons -->
   <br><br>
@@ -27,26 +31,31 @@
   <!-- RGB Sliders for Color -->
   <br><br>
   Shape Color:
-  <div>
+  <div style="display: flex; align-items: center;">
     <label for="Red">Red</label>
-    <input type="range" id="Red" name="Red" min="0" max="100" value="100" />
+    <input type="range" id="Red" name="Red" min="0" max="100" value="50" />
     <label for="Green">Green</label>
-    <input type="range" id="Green" name="Green" min="0" max="100" value="100" />
+    <input type="range" id="Green" name="Green" min="0" max="100" value="50" />
     <label for="Blue">Blue</label>
-    <input type="range" id="Blue" name="Blue" min="0" max="100" value="100" />
+    <input type="range" id="Blue" name="Blue" min="0" max="100" value="50" />
+    Selected Color:
+    <div style="position: relative; width: 50px; height: 50px; margin-left: 10px;">
+      <!-- Black box -->
+      <div style="background-color: black; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></div>
+      <!-- Color picker canvas -->
+      <canvas id="color" width="40" height="40" style="position: absolute; top: 5px; left: 5px;">
+        Please use a browser that supports "canvas"
+      </canvas>
+    </div>
   </div>
   <!-- Slider for Size -->
-  <br><br>
-  <div>
-    <label for="Size">Shape Size:</label>
-    <input type="range" id="Size" name="Size" min="1" max="100" value="20" />
-  </div>
+  <label for="Size">Shape Size:</label>
+  <input type="range" id="Size" name="Size" min="1" max="100" value="20" />
   <!-- Slider for Circle Segments -->
-  <br><br>
-  <div>
-    <label for="Segment">Circle Segment Count</label>
-    <input type="range" id="Segment" name="Segment" min="3" max="30" value="15" />
-  </div>
+  <label for="Segment">Circle Segment Count: </label>
+  <input type="range" id="Segment" name="Segment" min="3" max="20" value="15" />
+  <label for="Opacity">Opacity: </label>
+  <input type="range" id="Opacity" name="Opacity" min="0" max="100" value="100" />
 
   <script src="../lib/webgl-utils.js"></script>
   <script src="../lib/webgl-debug.js"></script>

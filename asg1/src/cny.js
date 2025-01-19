@@ -1,25 +1,3 @@
-// class Cny {
-//     constructor() {
-//         this.type = 'cny';
-
-//     }
-//     render() {
-//         var xy = this.position;
-//         var rgba = this.color;
-//         var size = this.size;
-
-//         // Pass the position of a point to a_Position variable
-//         // gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
-//         // Pass the color of a point to u_FragColor variable
-//         gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
-//         // Pass the size of the shape
-//         gl.uniform1f(u_Size, size);
-//         // Draw
-//         var delta = size/400
-//         drawTriangles([xy[0], xy[1]+delta, xy[0] - delta, xy[1]- delta, xy[0]+delta, xy[1] - delta])
-//     }
-// }
-
 function drawTriangleStrip(vertices, rgba) {
     n = vertices.length/2;
     // Color for character fu
@@ -97,7 +75,7 @@ function drawBelly() {
     var belly_1 = convertSquareToPoint([-3.5, 6.5, -2.3, 6.7, -1.5, 6.3, -1, 7, 1.3, 7, 1.3, 6.2, 3.2, 6.3]);
     var belly_2 = convertSquareToPoint([2.5, 6.5, 4.3, 6, 5.8, 6.8, 5.8, 5.8, 6.5, 5.5]);
     var belly_3 = convertSquareToPoint([4.5,6, 6, 6.5, 5.8, 5, 6.5, 5.5, 6.5, 4.8, 5.8, 5, 6.5, 3.5, 6.2, 3, 7.5, 1.8, 6.5, 5]);
-    var tail_belly = convertSquareToPoint([-1.5, -7.7, -2.5, -6.8, -1.5, -7.8, -2.8, -7.8, -4, -8.5, -2, -9.5, -2, -7.8, -.8, -10]);
+    var tail_belly = convertSquareToPoint([-1.5, -7.7, -2.5, -6.8, -1.5, -7.8, -2.8, -7.8, -3.5, -8.5, -2, -9.5, -2, -7.8, -.8, -10]);
     drawTriangleStrip(belly_1, rgba);
     drawTriangleStrip(belly_2, rgba);
     drawTriangleStrip(belly_3, rgba);
