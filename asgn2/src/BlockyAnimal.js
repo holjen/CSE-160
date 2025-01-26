@@ -34,9 +34,12 @@ let g_selectedColor = [.5, .5, .5, 1.0];
 let g_selectedType = POINT;
 let g_globalAngleX = 90;
 let g_globalAngleY = 15;
-let g_wingAngle = 225;
-
-
+let g_mainWingAngle = 225;
+let g_midWingAngle = 0 - 90;
+let g_tipWingAngle = 50;
+let g_startTime = performance.now() / 1000.0;
+let g_seconds = performance.now() / 1000.0 - g_startTime;
+let g_animation = false;
 function setupWebGL() {
   // Retrieve <canvas> element
   canvas = document.getElementById('webgl');
@@ -136,60 +139,60 @@ function renderBody() {
 
 function renderLeftWing() {
   var wingMain = new Cube();
-  wingMain.color = [1,1,0,1];
+  wingMain.color = [1, 1, 0, 1];
   //wingMain.matrix.setTranslate(-0.4,-.3,-.45);
-  wingMain.matrix.translate(-0.4,-.3,0);
-  wingMain.matrix.rotate(g_wingAngle,1,0,0)
+  wingMain.matrix.translate(-0.4, -.3, 0);
+  wingMain.matrix.rotate(g_mainWingAngle, 1, 0, 0)
   //wingMain.matrix.translate(-0.4,-.3,-.45);
   var wingMainLoc = new Matrix4(wingMain.matrix);
-  wingMain.matrix.scale(.15,.05,.65);
+  wingMain.matrix.scale(.15, .05, .45);
   wingMain.render();
 
   var wingMid = new Cube();
   wingMid.matrix = wingMainLoc;
-  wingMid.color = [0,1,0,1];
-  wingMid.matrix.translate(0,.05,.65);
-  wingMid.matrix.rotate(-90,1,0,0);
+  wingMid.color = [0, 1, 0, 1];
+  wingMid.matrix.translate(0, 0, .45);
+  wingMid.matrix.rotate(g_midWingAngle, 1, 0, 0);
   var wingMidLoc = new Matrix4(wingMid.matrix);
-  wingMid.matrix.scale(.15,.05,.45);
+  wingMid.matrix.scale(.15, .05, .35);
   wingMid.render();
 
   var wingTip = new Cube();
   wingTip.matrix = wingMidLoc;
-  wingTip.color = [0,0,1,1];
-  wingTip.matrix.translate(0,.05,.4);
-  wingTip.matrix.rotate(90,1,0,0);
-  wingTip.matrix.scale(.15,.05,.2);
+  wingTip.color = [0, 0, 1, 1];
+  wingTip.matrix.translate(0, 0, .4);
+  wingTip.matrix.rotate(g_tipWingAngle, 1, 0, 0);
+  wingTip.matrix.scale(.15, .05, .2);
   wingTip.render();
 }
 
 function renderRightWing() {
   //wingMain.matrix.rotate(180,0,1,0).rotate(45,1,0,0);
   var wingMain = new Cube();
-  wingMain.color = [1,1,0,1];
+  wingMain.color = [1, 1, 0, 1];
   //wingMain.matrix.setTranslate(-0.4,-.3,-.45);
-  wingMain.matrix.translate(-0.25,-.3,0.15);
-  wingMain.matrix.rotate(180,0,1,0).rotate(g_wingAngle,1,0,0)
+  wingMain.matrix.translate(-0.25, -.3, 0.15);
+  wingMain.matrix.rotate(180, 0, 1, 0).rotate(g_mainWingAngle, 1, 0, 0)
   //wingMain.matrix.translate(-0.4,-.3,-.45);
   var wingMainLoc = new Matrix4(wingMain.matrix);
-  wingMain.matrix.scale(.15,.05,.65);
+  wingMain.matrix.scale(.15, .05, .45);
   wingMain.render();
 
   var wingMid = new Cube();
   wingMid.matrix = wingMainLoc;
-  wingMid.color = [0,1,0,1];
-  wingMid.matrix.translate(0,.05,.65);
-  wingMid.matrix.rotate(-90,1,0,0);
+  wingMid.color = [0, 1, 0, 1];
+  wingMid.matrix.translate(0, 0, .45);
+  wingMid.matrix.rotate(g_midWingAngle, 1, 0, 0);
   var wingMidLoc = new Matrix4(wingMid.matrix);
-  wingMid.matrix.scale(.15,.05,.45);
+  wingMid.matrix.scale(.15, .05, .35);
   wingMid.render();
 
   var wingTip = new Cube();
   wingTip.matrix = wingMidLoc;
-  wingTip.color = [0,0,1,1];
-  wingTip.matrix.translate(0,.05,.4);
-  wingTip.matrix.rotate(90,1,0,0);
-  wingTip.matrix.scale(.15,.05,.2);
+  wingTip.color = [0, 0, 1, 1];
+  wingTip.matrix.translate(0, 0, .4);
+  wingTip.matrix.rotate(g_tipWingAngle, 1, 0, 0);
+  wingTip.matrix.scale(.15, .05, .2);
   wingTip.render();
   // var wingMain = new Cube();
   // wingMain.color = [1,1,0,1];
@@ -218,8 +221,8 @@ function renderRightWing() {
 function renderAllShapes() {
   // Check the time at the start of this fuction
   var startTime = performance.now();
-  var globalRotMat = new Matrix4().rotate(g_globalAngleX, 0, 1, 0).rotate(g_globalAngleY,1,0,0);
-  
+  var globalRotMat = new Matrix4().rotate(g_globalAngleX, 0, 1, 0).rotate(g_globalAngleY, 1, 0, 0);
+
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -263,12 +266,28 @@ function renderAllShapes() {
 function addActionsForHtmlUI() {
   // RGB Sliders
   document.getElementById('Cam').addEventListener('mousemove', function () { g_globalAngleX = this.value; renderAllShapes(); });
-  document.getElementById('wing').addEventListener('mousemove', function () { g_wingAngle = this.value; renderAllShapes();});
-  document.getElementById('Green').addEventListener('mouseup', function () { g_selectedColor[1] = this.value / 100; });
-  document.getElementById('Blue').addEventListener('mouseup', function () { g_selectedColor[2] = this.value / 100; });
+  document.getElementById('MainWing').addEventListener('mousemove', function () { g_mainWingAngle = this.value; renderAllShapes(); });
+  document.getElementById('MidWing').addEventListener('mousemove', function () { g_midWingAngle = this.value; renderAllShapes(); });
+  document.getElementById('TipWing').addEventListener('mousemove', function () { g_tipWingAngle = this.value; renderAllShapes(); });
   // Clear Button
-  document.getElementById('Clear').onclick = function () { g_shapesList = []; renderAllShapes(); };
+  document.getElementById('animationOn').onclick = function () { g_animation = true; };
+  document.getElementById('animationOff').onclick = function () { g_animation = false; };
   // Shape Button
+}
+
+function updateAnimationAngles() {
+  if (g_animation) {
+    g_mainWingAngle = 185 + (55 * Math.sin(g_seconds));
+    g_midWingAngle = 0 - (25 * Math.sin(g_seconds));
+    g_tipWingAngle = 0 - (25 * Math.sin(g_seconds));
+  }
+}
+
+function tick() {
+  g_seconds = performance.now() / 1000.0 - g_startTime;
+  updateAnimationAngles();
+  renderAllShapes();
+  requestAnimationFrame(tick);
 }
 
 function main() {
@@ -284,7 +303,7 @@ function main() {
     const yRatio = (ev.clientY / canvas.height) * 2 - 1;
 
     g_globalAngleX = xRatio * 360;
-    g_globalAngleY = yRatio * 360; 
+    g_globalAngleY = yRatio * 360;
 
     // Re-render shapes with updated angles
     renderAllShapes();
@@ -295,5 +314,6 @@ function main() {
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   renderAllShapes();
+  requestAnimationFrame(tick);
   //drawCny();
 }

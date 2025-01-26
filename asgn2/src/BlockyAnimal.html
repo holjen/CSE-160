@@ -13,18 +13,20 @@
     </canvas>
   </div>
   <!-- Clear Button -->
-  <button type="button" id="Clear">Clear</button>
+   Animation:
+  <button type="button" id="animationOn">On</button>
+  <button type="button" id="animationOff">Off</button>
   <!-- RGB Sliders for Color -->
   <br><br>
   <div style="display: flex; align-items: center;">
     <label for="Cam">Camera Angle</label>
     <input type="range" id="Cam" name="Cam" min="0" max="360" value="5" />
-    <label for="wing">wing</label>
-    <input type="range" id="wing" name="wing" min="0" max="360" value="270" />
-    <label for="Green">Green</label>
-    <input type="range" id="Green" name="Green" min="0" max="100" value="50" />
-    <label for="Blue">Blue</label>
-    <input type="range" id="Blue" name="Blue" min="0" max="100" value="50" />
+    <label for="MainWing">Main Wing</label>
+    <input type="range" id="MainWing" name="MainWing" min="120" max="250" value="225" />
+    <label for="MidWing">Middle of Wing</label>
+    <input type="range" id="MidWing" name="MidWing" min="250" max="360" value="270" />
+    <label for="TipWing">Tip of Wing</label>
+    <input type="range" id="TipWing" name="TipWing" min="-45" max="120" value="50" />
   </div>
 
   <script src="../lib/webgl-utils.js"></script>
