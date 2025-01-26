@@ -34,7 +34,7 @@ let g_selectedColor = [.5, .5, .5, 1.0];
 let g_selectedType = POINT;
 let g_globalAngleX = 90;
 let g_globalAngleY = 15;
-let g_wingAngle = 0;
+let g_wingAngle = 225;
 
 
 function setupWebGL() {
@@ -138,9 +138,9 @@ function renderLeftWing() {
   var wingMain = new Cube();
   wingMain.color = [1,1,0,1];
   //wingMain.matrix.setTranslate(-0.4,-.3,-.45);
+  wingMain.matrix.translate(-0.4,-.3,0);
+  wingMain.matrix.rotate(g_wingAngle,1,0,0)
   //wingMain.matrix.translate(-0.4,-.3,-.45);
-  wingMain.matrix.rotate(45,1,0,0)
-  wingMain.matrix.translate(-0.4,-.3,-.45);
   var wingMainLoc = new Matrix4(wingMain.matrix);
   wingMain.matrix.scale(.15,.05,.65);
   wingMain.render();
@@ -148,7 +148,8 @@ function renderLeftWing() {
   var wingMid = new Cube();
   wingMid.matrix = wingMainLoc;
   wingMid.color = [0,1,0,1];
-  wingMid.matrix.rotate(90,1,0,0);
+  wingMid.matrix.translate(0,.05,.65);
+  wingMid.matrix.rotate(-90,1,0,0);
   var wingMidLoc = new Matrix4(wingMid.matrix);
   wingMid.matrix.scale(.15,.05,.45);
   wingMid.render();
@@ -156,17 +157,20 @@ function renderLeftWing() {
   var wingTip = new Cube();
   wingTip.matrix = wingMidLoc;
   wingTip.color = [0,0,1,1];
+  wingTip.matrix.translate(0,.05,.4);
   wingTip.matrix.rotate(90,1,0,0);
-  wingTip.matrix.translate(-.0,.45,-0.05);
-  wingTip.matrix.scale(.15,.05,.15);
+  wingTip.matrix.scale(.15,.05,.2);
   wingTip.render();
 }
 
 function renderRightWing() {
+  //wingMain.matrix.rotate(180,0,1,0).rotate(45,1,0,0);
   var wingMain = new Cube();
   wingMain.color = [1,1,0,1];
-  wingMain.matrix.rotate(180,0,1,0).rotate(45,1,0,0);
-  wingMain.matrix.translate(.25,-.4,-.55);
+  //wingMain.matrix.setTranslate(-0.4,-.3,-.45);
+  wingMain.matrix.translate(-0.25,-.3,0.15);
+  wingMain.matrix.rotate(180,0,1,0).rotate(g_wingAngle,1,0,0)
+  //wingMain.matrix.translate(-0.4,-.3,-.45);
   var wingMainLoc = new Matrix4(wingMain.matrix);
   wingMain.matrix.scale(.15,.05,.65);
   wingMain.render();
@@ -174,7 +178,8 @@ function renderRightWing() {
   var wingMid = new Cube();
   wingMid.matrix = wingMainLoc;
   wingMid.color = [0,1,0,1];
-  wingMid.matrix.rotate(90,1,0,0);
+  wingMid.matrix.translate(0,.05,.65);
+  wingMid.matrix.rotate(-90,1,0,0);
   var wingMidLoc = new Matrix4(wingMid.matrix);
   wingMid.matrix.scale(.15,.05,.45);
   wingMid.render();
@@ -182,10 +187,33 @@ function renderRightWing() {
   var wingTip = new Cube();
   wingTip.matrix = wingMidLoc;
   wingTip.color = [0,0,1,1];
+  wingTip.matrix.translate(0,.05,.4);
   wingTip.matrix.rotate(90,1,0,0);
-  wingTip.matrix.translate(-.0,.45,-0.05);
-  wingTip.matrix.scale(.15,.05,.15);
+  wingTip.matrix.scale(.15,.05,.2);
   wingTip.render();
+  // var wingMain = new Cube();
+  // wingMain.color = [1,1,0,1];
+  // wingMain.matrix.rotate(180,0,1,0).rotate(45,1,0,0);
+  // wingMain.matrix.translate(.25,-.4,-.55);
+  // var wingMainLoc = new Matrix4(wingMain.matrix);
+  // wingMain.matrix.scale(.15,.05,.65);
+  // wingMain.render();
+
+  // var wingMid = new Cube();
+  // wingMid.matrix = wingMainLoc;
+  // wingMid.color = [0,1,0,1];
+  // wingMid.matrix.rotate(90,1,0,0);
+  // var wingMidLoc = new Matrix4(wingMid.matrix);
+  // wingMid.matrix.scale(.15,.05,.45);
+  // wingMid.render();
+
+  // var wingTip = new Cube();
+  // wingTip.matrix = wingMidLoc;
+  // wingTip.color = [0,0,1,1];
+  // wingTip.matrix.rotate(90,1,0,0);
+  // wingTip.matrix.translate(-.0,.45,-0.05);
+  // wingTip.matrix.scale(.15,.05,.15);
+  // wingTip.render();
 }
 function renderAllShapes() {
   // Check the time at the start of this fuction
