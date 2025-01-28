@@ -1,4 +1,3 @@
-// ColoredPoint.js (c) 2012 matsuda
 // Vertex shader program
 var VSHADER_SOURCE = `
   attribute vec4 a_Position;
@@ -32,15 +31,19 @@ let u_GlobalRotateMatrix;
 let g_shapesList = [];
 let g_selectedColor = [.5, .5, .5, 1.0];
 let g_selectedType = POINT;
-let g_globalAngleX = 200;
-let g_globalAngleY = 15;
+let g_globalAngleX = -30;
+let g_globalAngleY = -15;
 let g_mainWingAngle = 225;
 let g_midWingAngle = -90;
 let g_tipWingAngle = 50;
 let g_startTime = performance.now() / 1000.0;
-let g_seconds = performance.now() / 1000.0 - g_startTime;
+let g_seconds = 0;
 let g_animation = false;
 let g_showBone = 0.1;
+
+let g_eye_x = .05;
+let g_pupilx = .027;
+let g_blink = false;
 function setupWebGL() {
   // Retrieve <canvas> element
   canvas = document.getElementById('webgl');
@@ -89,12 +92,6 @@ function connectVariablesToGLSL() {
   }
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
-  // // point size
-  // u_Size = gl.getUniformLocation(gl.program, 'u_Size');
-  // if (!u_Size) {
-  //   console.log('Failed to get the storage location of u_Size');
-  //   return;
-  // }
 }
 
 function convertMouseCoordinatesToGL(ev) {
@@ -121,6 +118,20 @@ function renderHead() {
   head2.matrix.rotate(120, 0, 0, 1);
   head2.matrix.scale(.15, .15, .15);
   head2.render();
+
+  var eye = new Cube();
+  eye.color = [0, 0, 0, 1];
+  eye.matrix.translate(-.57, .13, -.03);
+  eye.matrix.rotate(120, 0, 0, 1);
+  eye.matrix.scale(g_eye_x, .05, .2);
+  eye.render();
+
+  var eye2 = new Cube();
+  eye2.color = [1, 1, 1, 1];
+  eye2.matrix.translate(-.59, .13, -.031);
+  eye2.matrix.rotate(120, 0, 0, 1);
+  eye2.matrix.scale(g_pupilx, .025, .21);
+  eye2.render();
 
   var neck = new Cube();
   neck.color = [1, .8, 1, 1];
@@ -179,7 +190,7 @@ function renderBody() {
 
 function createFeather(bone, loc, s, r) {
   var feather = new Cube();
-  feather.color = [0, 1, 1, 1];
+  feather.color = [1, .5, 1, 1];
   feather.matrix = new Matrix4(bone);
   feather.matrix.translate(loc[0], loc[1], loc[2]);
   feather.matrix.rotate(r[0], r[1], r[2], r[3]);
@@ -189,21 +200,16 @@ function createFeather(bone, loc, s, r) {
 
 function renderLeftWing() {
   var wingMain = new Cube();
-  wingMain.color = [1, 1, 0, g_showBone];
-  //wingMain.matrix.setTranslate(-0.4,-.3,-.45);
+  wingMain.color = [1, .5, 1, g_showBone];
   wingMain.matrix.translate(-0.4, -.3, 0);
   wingMain.matrix.rotate(g_mainWingAngle, 1, 0, 0)
-  //wingMain.matrix.translate(-0.4,-.3,-.45);
   var wingMainLoc = new Matrix4(wingMain.matrix);
   wingMain.matrix.scale(.15, .05, .45);
   wingMain.render();
 
-  //createFeather(wingMainLoc, [0,-.55,0], [.2,.05,.05], [0,1,0,0]);
-  // createFeather(wingMainLoc, [0,-.05,0.05], [.2,.05,.05]);
-  // createFeather(wingMainLoc, [0,-.05,0.1], [.2,.05,.05]);
   var wingMid = new Cube();
   wingMid.matrix = new Matrix4(wingMainLoc);
-  wingMid.color = [0, 1, 0, g_showBone];
+  wingMid.color = [1, .5, 1, g_showBone];
   wingMid.matrix.translate(0, 0, .45);
   wingMid.matrix.rotate(g_midWingAngle, 1, 0, 0);
   var wingMidLoc = new Matrix4(wingMid.matrix);
@@ -212,7 +218,7 @@ function renderLeftWing() {
 
   var wingTip = new Cube();
   wingTip.matrix = new Matrix4(wingMidLoc);
-  wingTip.color = [0, 0, 1, g_showBone];
+  wingTip.color = [1, .5, 1, g_showBone];
   wingTip.matrix.translate(0, 0, .4);
   wingTip.matrix.rotate(g_tipWingAngle, 1, 0, 0);
   var wingTipLoc = new Matrix4(wingTip.matrix);
@@ -228,28 +234,20 @@ function renderLeftWing() {
   }
   for (let i = 0; i < 5; i++) {
     createFeather(wingTipLoc, [0.05, -.05, -0.1 + i / 20], [.45 + i / 30, .05, .05], [-10 - i * 10, 0, 1, 0]);
-    // createFeather(wingTipLoc, [0.05, -.05, 0], [.35, .05, .05], [-20, 0, 1, 0]);
   }
 }
 
 function renderRightWing() {
-  //wingMain.matrix.rotate(180,0,1,0).rotate(45,1,0,0);
   var wingMain = new Cube();
-  wingMain.color = [1, 1, 0, g_showBone];
-  //wingMain.matrix.setTranslate(-0.4,-.3,-.45);
+  wingMain.color = [1, .5, 1, g_showBone];
   wingMain.matrix.translate(-0.25, -.3, 0.15);
   wingMain.matrix.rotate(180, 0, 1, 0).rotate(g_mainWingAngle, 1, 0, 0)
-  //wingMain.matrix.translate(-0.4,-.3,-.45);
   var wingMainLoc = new Matrix4(wingMain.matrix);
   wingMain.matrix.scale(.15, .05, .45);
   wingMain.render();
-  // feathers along the main wing
-  // for(let i = 0; i < 40; i++) {
-  //   createFeather(wingMainLoc, [0.1,-.05,0 + i/100], [.2+ i/300,.05,.05], [180,0,1,0]);
-  // }
   var wingMid = new Cube();
   wingMid.matrix = new Matrix4(wingMainLoc);
-  wingMid.color = [0, 1, 0, g_showBone];
+  wingMid.color = [1, .5, 1, g_showBone];
   wingMid.matrix.translate(0, 0, .45);
   wingMid.matrix.rotate(g_midWingAngle, 1, 0, 0);
   var wingMidLoc = new Matrix4(wingMid.matrix);
@@ -258,7 +256,7 @@ function renderRightWing() {
 
   var wingTip = new Cube();
   wingTip.matrix = new Matrix4(wingMidLoc);
-  wingTip.color = [0, 0, 1, g_showBone];
+  wingTip.color = [1, .5, 1, g_showBone];
   wingTip.matrix.translate(0, 0, .4);
   wingTip.matrix.rotate(g_tipWingAngle, 1, 0, 0);
   var wingTipLoc = new Matrix4(wingTip.matrix);
@@ -268,15 +266,11 @@ function renderRightWing() {
   for (let i = 0; i < 10; i++) {
     createFeather(wingMainLoc, [0.1, -.05, .05 + i / 20], [.2 + i / 50, .05, .05], [180, 0, 1, 0]);
   }
-  // for (let i = 0; i < 10; i++) {
-  //   createFeather(wingMainLoc, [0.05, -.05, 0 + i / 20], [.2 + i / 50, .05, .05], [0, 1, 0, 0]);
-  // }
   for (let i = 0; i < 7; i++) {
     createFeather(wingMidLoc, [0.1, -.05, 0.05 + i / 20], [.35 + i / 50, .05, .05], [180, 0, 1, 0]);
   }
   for (let i = 0; i < 5; i++) {
     createFeather(wingTipLoc, [0.1, -.05, -0.05 + i / 20], [.45 + i / 30, .05, .05], [180 + 10 + i * 10, 0, 1, 0]);
-    // createFeather(wingTipLoc, [0.05, -.05, 0], [.35, .05, .05], [-20, 0, 1, 0]);
   }
 }
 
@@ -294,54 +288,26 @@ function renderAllShapes() {
   renderLeftWing();
   renderRightWing();
 
-  // var cone = new Cone();
-  // cone.color = [1,1,0,1];
-  // cone.segments = 3;
-  // cone.height = .3;
-  // cone.radius = 20;
-  // cone.render();
-  // var len = g_shapesList.length;
-  // for (var i = 0; i < len; i++) {
-  //   g_shapesList[i].render();
-  // }
-
-  // var duration = performance.now() - startTime;
-  // sendTextToHTML("ms: " + Math.floor(duration) + " fps: "+ Math.floor(10000/duration));
+  var duration = performance.now() - startTime;
+  sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000 / duration) / 10, "fps");
 }
 
-// function click(ev) {
-//   [x, y] = convertMouseCoordinatesToGL(ev);
-
-//   // Store the point into the shapesList
-//   let point;
-//   if (g_selectedType == POINT) {
-//     point = new Point();
-//   } else if (g_selectedType == TRIANGLE) {
-//     point = new Triangle();
-//   } else if (g_selectedType == CIRCLE) {
-//     point = new Circle();
-//     point.segments = g_selectedSeg;
-//   }
-//   console.log([x, y]);
-//   point.position = [x, y];
-//   point.color = g_selectedColor.slice();
-//   point.size = g_selectedSize;
-//   g_shapesList.push(point);
-
-//   // Redraws all shapes onto the canvas
-//   renderAllShapes();
-// }
+function sendTextToHTML(text, htmlID) {
+  var htmlElm = document.getElementById(htmlID);
+  if (!htmlElm) {
+    console.log("Failed to get " + htmlID);
+    return;
+  }
+  htmlElm.innerHTML = text;
+}
 
 function addActionsForHtmlUI() {
-  // RGB Sliders
   document.getElementById('Cam').addEventListener('mousemove', function () { g_globalAngleX = this.value; renderAllShapes(); });
   document.getElementById('MainWing').addEventListener('mousemove', function () { g_mainWingAngle = this.value; renderAllShapes(); });
   document.getElementById('MidWing').addEventListener('mousemove', function () { g_midWingAngle = this.value; renderAllShapes(); });
   document.getElementById('TipWing').addEventListener('mousemove', function () { g_tipWingAngle = this.value; renderAllShapes(); });
-  // Clear Button
   document.getElementById('animationOn').onclick = function () { g_animation = true; };
   document.getElementById('animationOff').onclick = function () { g_animation = false; };
-  // Shape Button
 }
 
 function updateAnimationAngles() {
@@ -350,10 +316,13 @@ function updateAnimationAngles() {
     g_midWingAngle = 0 - (25 * Math.sin(g_seconds));
     g_tipWingAngle = 0 - (25 * Math.sin(g_seconds));
   }
+  if (g_blink) {
+    g_pupilx = (.027 * Math.abs(Math.sin(g_seconds)));
+  }
 }
 
 function tick() {
-  g_seconds = performance.now() / 1000.0 - g_startTime;
+  g_seconds = (performance.now() / 1000.0) - g_startTime;
   updateAnimationAngles();
   renderAllShapes();
   requestAnimationFrame(tick);
@@ -374,8 +343,14 @@ function main() {
     g_globalAngleX = xRatio * 360;
     g_globalAngleY = yRatio * 360;
 
-    // Re-render shapes with updated angles
     renderAllShapes();
+  });
+  canvas.addEventListener('click', (event) => {
+    const isShiftClick = event.shiftKey;
+    if (isShiftClick) {
+      g_blink = !g_blink;
+      renderAllShapes();
+    }
   });
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
