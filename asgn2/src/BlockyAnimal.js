@@ -274,7 +274,7 @@ function renderRightWing() {
   }
 }
 
-function renderAllShapes() {
+function renderScene() {
   // Check the time at the start of this fuction
   var startTime = performance.now();
   var globalRotMat = new Matrix4().rotate(g_globalAngleX, 0, 1, 0).rotate(g_globalAngleY, 1, 0, 0);
@@ -302,10 +302,10 @@ function sendTextToHTML(text, htmlID) {
 }
 
 function addActionsForHtmlUI() {
-  document.getElementById('Cam').addEventListener('mousemove', function () { g_globalAngleX = this.value; renderAllShapes(); });
-  document.getElementById('MainWing').addEventListener('mousemove', function () { g_mainWingAngle = this.value; renderAllShapes(); });
-  document.getElementById('MidWing').addEventListener('mousemove', function () { g_midWingAngle = this.value; renderAllShapes(); });
-  document.getElementById('TipWing').addEventListener('mousemove', function () { g_tipWingAngle = this.value; renderAllShapes(); });
+  document.getElementById('Cam').addEventListener('mousemove', function () { g_globalAngleX = this.value; renderScene(); });
+  document.getElementById('MainWing').addEventListener('mousemove', function () { g_mainWingAngle = this.value; renderScene(); });
+  document.getElementById('MidWing').addEventListener('mousemove', function () { g_midWingAngle = this.value; renderScene(); });
+  document.getElementById('TipWing').addEventListener('mousemove', function () { g_tipWingAngle = this.value; renderScene(); });
   document.getElementById('animationOn').onclick = function () { g_animation = true; };
   document.getElementById('animationOff').onclick = function () { g_animation = false; };
 }
@@ -324,7 +324,7 @@ function updateAnimationAngles() {
 function tick() {
   g_seconds = (performance.now() / 1000.0) - g_startTime;
   updateAnimationAngles();
-  renderAllShapes();
+  renderScene();
   requestAnimationFrame(tick);
 }
 
@@ -343,13 +343,13 @@ function main() {
     g_globalAngleX = xRatio * 360;
     g_globalAngleY = yRatio * 360;
 
-    renderAllShapes();
+    renderScene();
   });
   canvas.addEventListener('click', (event) => {
     const isShiftClick = event.shiftKey;
     if (isShiftClick) {
       g_blink = !g_blink;
-      renderAllShapes();
+      renderScene();
     }
   });
   // Specify the color for clearing <canvas>
@@ -357,7 +357,7 @@ function main() {
 
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  renderAllShapes();
+  renderScene();
   requestAnimationFrame(tick);
   //drawCny();
 }
