@@ -20,7 +20,7 @@ var FSHADER_SOURCE = `
   uniform vec4 u_FragColor;
   void main() {
     gl_FragColor = u_FragColor;
-    // gl_FragColor = vec4(v_UV, 1.0, 1.0);
+    gl_FragColor = vec4(v_UV, 1.0, 1.0);
   }`;
 
 // CONSTS
@@ -106,15 +106,25 @@ function connectVariablesToGLSL() {
     console.log('Failed to get the storage location of u_ModelMatrix');
   }
   u_GlobalRotateMatrix = gl.getUniformLocation(gl.program, 'u_GlobalRotateMatrix');
-  if (!u_ModelMatrix) {
+  if (!u_GlobalRotateMatrix) {
     console.log('Failed to get the storage location of u_GlobalRotateMatrix');
   }
-  u_ViewMatrix= gl.getUniformLocation(gl.program, 'u_ViewMatrix');
-  if (!u_ModelMatrix) {
+  u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
+  if (!u_ViewMatrix) {
     console.log('Failed to get the storage location of u_ViewMatrix');
+  }
+  u_ProjectionMatrix = gl.getUniformLocation(gl.program, 'u_ProjectionMatrix');
+  if (!u_ProjectionMatrix) {
+    console.log('Failed to get the storage location of u_ProjectionMatrix');
   }
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
+  var identityG = new Matrix4();
+  gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, identityG.elements);
+  var identityV = new Matrix4();
+  gl.uniformMatrix4fv(u_ViewMatrix, false, identityV.elements);
+  var identityP = new Matrix4();
+  gl.uniformMatrix4fv(u_ProjectionMatrix, false, identityP.elements);
 }
 
 function convertMouseCoordinatesToGL(ev) {
@@ -306,10 +316,17 @@ function renderScene() {
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  renderHead();
+  // renderHead();
   // renderBody();
   // renderLeftWing();
   // renderRightWing();
+  console.log("rendering");
+  var head = new Cube();
+  head.color = [1, .7, 1, 1];
+  head.matrix.translate(-.6, 0.05, .025);
+  head.matrix.rotate(120, 0, 0, 1);
+  head.matrix.scale(0.1, .1, .1);
+  head.render();
 
   var duration = performance.now() - startTime;
   sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000 / duration) / 10, "fps");

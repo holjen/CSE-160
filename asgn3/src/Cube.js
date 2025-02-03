@@ -11,8 +11,10 @@ class Cube {
         gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
         // front of cube
         gl.uniform4f(u_FragColor, rgba[0] * .95, rgba[1] * .95, rgba[2] * .95, rgba[3]);
-        drawTriangle3D([0, 0, 0, 1, 1, 0, 1, 0, 0]);
-        drawTriangle3D([0, 0, 0, 0, 1, 0, 1, 1, 0]);
+        //drawTriangle3D([0, 0, 0, 1, 1, 0, 1, 0, 0]);
+        drawTriangle3DUV([0, 0, 0, 1, 1, 0, 1, 0, 0], [1,0,0,1,1,1]);
+        drawTriangle3DUV([0,0,0, 0,1,0, 1,1,0], [0,0,0,1,1,1]);
+        //drawTriangle3D([0, 0, 0, 0, 1, 0, 1, 1, 0]);
         // // left of cube
         gl.uniform4f(u_FragColor, rgba[0] * .8, rgba[1] * .8, rgba[2] * .8, rgba[3]);
         drawTriangle3D([0, 0, 0, 0, 1, 0, 0, 1, 1]);
