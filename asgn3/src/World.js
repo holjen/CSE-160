@@ -18,9 +18,11 @@ var FSHADER_SOURCE = `
   precision mediump float;
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
+  uniform sampler2D u_Sampler0;
   void main() {
     gl_FragColor = u_FragColor;
     gl_FragColor = vec4(v_UV, 1.0, 1.0);
+    gl_FragColor = texture2D(u_Sampler0, v_UV);
   }`;
 
 // CONSTS
@@ -39,6 +41,7 @@ let u_ModelMatrix;
 let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_GlobalRotateMatrix;
+let u_Sampler0;
 
 
 let g_shapesList = [];
@@ -116,6 +119,12 @@ function connectVariablesToGLSL() {
   u_ProjectionMatrix = gl.getUniformLocation(gl.program, 'u_ProjectionMatrix');
   if (!u_ProjectionMatrix) {
     console.log('Failed to get the storage location of u_ProjectionMatrix');
+  }
+  // Get the storage location of u_Sampler
+  u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
+  if (!u_Sampler0) {
+    console.log('Failed to get the storage location of u_Sampler');
+    return false;
   }
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
@@ -320,12 +329,12 @@ function renderScene() {
   // renderBody();
   // renderLeftWing();
   // renderRightWing();
-  console.log("rendering");
+  // console.log("rendering");
   var head = new Cube();
   head.color = [1, .7, 1, 1];
-  head.matrix.translate(-.6, 0.05, .025);
+  //head.matrix.translate(-.6, 0.05, .025);
   head.matrix.rotate(120, 0, 0, 1);
-  head.matrix.scale(0.1, .1, .1);
+  head.matrix.scale(0.6, .6, .6);
   head.render();
 
   var duration = performance.now() - startTime;
@@ -368,6 +377,47 @@ function tick() {
   requestAnimationFrame(tick);
 }
 
+function initTextures(gl, n) {
+  var texture = gl.createTexture();   // Create a texture object
+  if (!texture) {
+    console.log('Failed to create the texture object');
+    return false;
+  }
+
+  var image = new Image();  // Create the image object
+  if (!image) {
+    console.log('Failed to create the image object');
+    return false;
+  }
+  // Register the event handler to be called on loading an image
+  image.onload = function () { loadTexture(gl, n, texture, u_Sampler0, image); };
+  //image.onload  
+  // Tell the browser to load an image
+  image.src = 'wave.png';
+
+  return true;
+}
+
+function loadTexture(gl, n, texture, u_Sampler, image) {
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
+  // Enable texture unit0
+  gl.activeTexture(gl.TEXTURE0);
+  // Bind the texture object to the target
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  // Set the texture parameters
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  // Set the texture image
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+
+  // Set the texture unit 0 to the sampler
+  gl.uniform1i(u_Sampler, 0);
+
+  gl.clear(gl.COLOR_BUFFER_BIT);   // Clear <canvas>
+
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, n); // Draw the rectangle
+}
+
 function main() {
 
   setupWebGL();
@@ -392,6 +442,7 @@ function main() {
       renderScene();
     }
   });
+  initTextures(gl, 0);
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
