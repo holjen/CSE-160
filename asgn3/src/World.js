@@ -19,16 +19,18 @@ var FSHADER_SOURCE = `
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
   uniform sampler2D u_Sampler0;
+  uniform int u_whichTexture;
   void main() {
+  if (u_whichTexture == -2) {
     gl_FragColor = u_FragColor;
-    gl_FragColor = vec4(v_UV, 1.0, 1.0);
+  } else if (u_whichTexture == -1) {
+    gl_FragColor =  vec4(v_UV, 1.0, 1.0);
+  } else if (u_whichTexture == 0) {
     gl_FragColor = texture2D(u_Sampler0, v_UV);
+  } else {
+    gl_FragColor = vec4(1,.2,.2,1); 
+  }
   }`;
-
-// CONSTS
-const POINT = 0;
-const TRIANGLE = 1;
-const CIRCLE = 2;
 
 // Global Variables
 let canvas;
@@ -42,24 +44,24 @@ let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_GlobalRotateMatrix;
 let u_Sampler0;
+let u_whichTexture;
 
-
-let g_shapesList = [];
-let g_selectedColor = [.5, .5, .5, 1.0];
-let g_selectedType = POINT;
 let g_globalAngleX = -30;
-let g_globalAngleY = -15;
+let g_globalAngleY = 0;
 let g_mainWingAngle = 225;
 let g_midWingAngle = -90;
 let g_tipWingAngle = 50;
 let g_startTime = performance.now() / 1000.0;
 let g_seconds = 0;
-let g_animation = false;
+let g_animation = true;
 let g_showBone = 0.1;
+let g_eye = new Vector3([-2, -1, 3]);
+let g_at = new Vector3([100, 0, -100]);
+let g_up = new Vector3([0, 1, 0]);
 
 let g_eye_x = .05;
 let g_pupilx = .027;
-let g_blink = false;
+let g_blink = true;
 function setupWebGL() {
   // Retrieve <canvas> element
   canvas = document.getElementById('webgl');
@@ -126,14 +128,14 @@ function connectVariablesToGLSL() {
     console.log('Failed to get the storage location of u_Sampler');
     return false;
   }
-  var identityM = new Matrix4();
-  gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
-  var identityG = new Matrix4();
-  gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, identityG.elements);
-  var identityV = new Matrix4();
-  gl.uniformMatrix4fv(u_ViewMatrix, false, identityV.elements);
-  var identityP = new Matrix4();
-  gl.uniformMatrix4fv(u_ProjectionMatrix, false, identityP.elements);
+  u_whichTexture = gl.getUniformLocation(gl.program, 'u_whichTexture');
+  if (!u_Sampler0) {
+    console.log('Failed to get the storage location of u_whichTexture');
+    return false;
+  }
+  var modelMatrix = new Matrix4();
+  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+
 }
 
 function convertMouseCoordinatesToGL(ev) {
@@ -316,27 +318,68 @@ function renderRightWing() {
   }
 }
 
+var g_map = [
+  [1, 1, 1, 1, 1, 1, 1 ,1],
+  [1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 1, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1],
+]
+function drawMap() {
+  for (x=0; x <8;x++) {
+    for (y=0;y<8;y++) {
+      if (g_map[x][y]==1){
+        var body = new Cube();
+        body.color = [1.0,1.0,1.0,1.0];
+        body.matrix.translate(x-4,-2,y-4);
+        body.render();
+      }
+    }
+  }
+}
 function renderScene() {
   // Check the time at the start of this fuction
   var startTime = performance.now();
+
+  var projMatrix = new Matrix4();
+  projMatrix.setPerspective(50, 1 * canvas.width / canvas.height, 1, 100);
+  gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMatrix.elements);
+
+  var viewMatrix = new Matrix4();
+  viewMatrix.setLookAt(g_eye.elements[0], g_eye.elements[1], g_eye.elements[2], g_at.elements[0], g_at.elements[1], g_at.elements[2], g_up.elements[0], g_up.elements[1], g_up.elements[2]);
+  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+
   var globalRotMat = new Matrix4().rotate(g_globalAngleX, 0, 1, 0).rotate(g_globalAngleY, 1, 0, 0);
 
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  // renderHead();
-  // renderBody();
-  // renderLeftWing();
-  // renderRightWing();
-  // console.log("rendering");
-  var head = new Cube();
-  head.color = [1, .7, 1, 1];
-  //head.matrix.translate(-.6, 0.05, .025);
-  head.matrix.rotate(120, 0, 0, 1);
-  head.matrix.scale(0.6, .6, .6);
-  head.render();
+  renderHead();
+  renderBody();
+  renderLeftWing();
+  renderRightWing();
+  // var head = new Cube();
+  // head.matrix.scale(0.6, .6, .6);
+  // head.render();
 
+  var floor = new Cube();
+  floor.color = [2,.3,.2,1];
+  floor.matrix.translate(0,-2,0);
+  floor.matrix.scale(10,0,10);
+  floor.matrix.translate(-.5,1,-.5);
+  floor.render();
+
+  var sky = new Cube();
+  sky.color = [0,0,1.0,1];
+  sky.matrix.scale(50,50,50);
+  sky.matrix.translate(-.5,-.5,-.5);
+  sky.render();
+
+  drawMap();
   var duration = performance.now() - startTime;
   sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000 / duration) / 10, "fps");
 }
@@ -377,28 +420,25 @@ function tick() {
   requestAnimationFrame(tick);
 }
 
-function initTextures(gl, n) {
-  var texture = gl.createTexture();   // Create a texture object
-  if (!texture) {
-    console.log('Failed to create the texture object');
-    return false;
-  }
-
+function initTextures() {
   var image = new Image();  // Create the image object
   if (!image) {
     console.log('Failed to create the image object');
     return false;
   }
   // Register the event handler to be called on loading an image
-  image.onload = function () { loadTexture(gl, n, texture, u_Sampler0, image); };
-  //image.onload  
+  image.onload = function () { sendImageToTEXTURE0(image); };
   // Tell the browser to load an image
   image.src = 'wave.png';
-
   return true;
 }
 
-function loadTexture(gl, n, texture, u_Sampler, image) {
+function sendImageToTEXTURE0(image) {
+  var texture = gl.createTexture();   // Create a texture object
+  if (!texture) {
+    console.log('Failed to create the texture object');
+    return false;
+  }
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
   // Enable texture unit0
   gl.activeTexture(gl.TEXTURE0);
@@ -411,11 +451,61 @@ function loadTexture(gl, n, texture, u_Sampler, image) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
 
   // Set the texture unit 0 to the sampler
-  gl.uniform1i(u_Sampler, 0);
+  gl.uniform1i(u_Sampler0, 0);
 
-  gl.clear(gl.COLOR_BUFFER_BIT);   // Clear <canvas>
+  console.log('finished loadTexture');
+}
 
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, n); // Draw the rectangle
+function keydown(ev) {
+  var vecD = new Vector3();
+  vecD.set(g_at);
+  vecD.sub(g_eye);
+  if (ev.key === "w" || ev.key === "W") {
+    vecD.normalize();
+    g_eye.add(vecD);
+    g_at.add(vecD);
+  }
+  else if (ev.key === "s" || ev.key === "S") {
+    vecD.normalize();
+    g_eye.sub(vecD);
+    g_at.sub(vecD);
+  }
+  else if (ev.key === "a" || ev.key === "A") {
+    vecD.normalize();
+    var left = Vector3.cross(vecD, g_up);
+    left.normalize();
+    left.mul(-1);
+    g_eye.add(left);
+    g_at.add(left);
+    // g_up.add(left);
+  }
+  else if (ev.key === "d" || ev.key === "D") {
+    vecD.normalize();
+    var right = Vector3.cross(vecD, g_up);
+    right.normalize();
+    // right.mul(-1);
+    g_eye.add(right);
+    g_at.add(right);
+  }
+  else if (ev.key === "q" || ev.key === "Q") {
+    let rotationMatrix = new Matrix4();
+    rotationMatrix.setRotate(5, g_up.elements[0], g_up.elements[1], g_up.elements[2]);
+    let newVecD = rotationMatrix.multiplyVector3(vecD);
+    var temp_eye = new Vector3;
+    temp_eye.set(g_eye);
+    temp_eye.add(newVecD);
+    g_at.set(temp_eye);
+  }
+  else if (ev.key === "e" || ev.key === "E") {
+    console.log("i am pressed")
+    let rotationMatrix = new Matrix4();
+    rotationMatrix.setRotate(-5, g_up.elements[0], g_up.elements[1], g_up.elements[2]);
+    let newVecD = rotationMatrix.multiplyVector3(vecD);
+    var temp_eye = new Vector3;
+    temp_eye.set(g_eye);
+    temp_eye.add(newVecD);
+    g_at.set(temp_eye);
+  }
 }
 
 function main() {
@@ -424,14 +514,15 @@ function main() {
   connectVariablesToGLSL();
 
   addActionsForHtmlUI();
+  document.onkeydown = keydown;
   canvas.addEventListener('mousemove', (ev) => {
 
     // Normalize coordinates (-1 to 1 range)
     const xRatio = (ev.clientX / canvas.width) * 2 - 1;
     const yRatio = (ev.clientY / canvas.height) * 2 - 1;
 
-    g_globalAngleX = xRatio * 360;
-    g_globalAngleY = yRatio * 360;
+    g_globalAngleX = xRatio * 100;
+    g_globalAngleY = yRatio * 100;
 
     renderScene();
   });
@@ -442,7 +533,7 @@ function main() {
       renderScene();
     }
   });
-  initTextures(gl, 0);
+  initTextures();
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
