@@ -207,8 +207,8 @@ function main() {
     const xRatio = (ev.clientX / canvas.width) * 2 - 1;
     const yRatio = (ev.clientY / canvas.height) * 2 - 1;
 
-    g_globalAngleX = xRatio * 60;
-    g_globalAngleY = yRatio * 60;
+    g_globalAngleX = xRatio * 40;
+    g_globalAngleY = yRatio * 40;
 
     renderScene();
   });
