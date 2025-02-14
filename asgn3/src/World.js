@@ -54,10 +54,11 @@ let u_Sampler1;
 let u_Sampler2;
 let u_whichTexture;
 
-let g_globalAngleX = -30;
+let g_globalAngleX = 0;
 let g_globalAngleY = 0;
+let g_camera = false;
 
-// let g_eye = new Vector3([1.4, 0, -.3]);
+// let g_eye = new Vector3([-4, 0, 6]);
 // let g_at = new Vector3([0, 1, 1]);
 // let g_up = new Vector3([0, 1, 0]);
 let g_eye = new Vector3([0, 0, 0]);
@@ -96,12 +97,18 @@ function renderScene() {
   // renderBody();
   // renderLeftWing();
   // renderRightWing();
-
-  var head2 = new Cube();
+  //, rotation:[90,0,1,0] 
+  renderHuman(new locationAttributes({ location: [8, 1.0, -1], rotation:[90,0,1,0] }), new cosmeticAttributes());
+  renderHuman(new locationAttributes({ location: [21, 1.0, 13], rotation:[180,0,1,0] }), new cosmeticAttributes());
+  renderHuman(new locationAttributes({ location: [13, 1.0, 7], rotation: [-90,0,1,0]}), new cosmeticAttributes({hairType: 1, hairColor: [0,0,0,1], shirtColor: [.5,.6,.5,1], pantsColor: [.3,.3,.3,1]}));
+  renderHuman(new locationAttributes({ location: [8, 1.0, 5], rotation:[150,0,1,0]}), new cosmeticAttributes({hairType: 2, hairColor: [1,.8,0,1], shirtColor: [.6,.5,.5,1], pantsColor: [.4,.4,.4,1]}));
+  renderHuman(new locationAttributes({ location: [15, 1.0, 17], rotation: [-90,0,1,0]}), new cosmeticAttributes({hairType: 1, hairColor: [77/255,45/255,26/255,1], shirtColor: [.5,.5,.6,1], pantsColor: [.3,.3,.3,1]}));
+  renderHuman(new locationAttributes({ location: [10, 1.0, 19], rotation: [-90,0,1,0]}), new cosmeticAttributes({hairType: 2, hairColor: [0,0,0,1], shirtColor: [.5,.5,.6,1], pantsColor: [.3,.3,.3,1]}));
+  // var head2 = new Cube();
   //head2.matrix.scale(0.6, .6, .6);
-  head2.matrix.translate(0, .75, 0);
-  head2.textureNum = 0;
-  head2.renderFastUV();
+  // head2.matrix.translate(0, .75, 0);
+  // head2.textureNum = 0;
+  // head2.renderFastUV();
 
   drawFloor();
   drawSky();
@@ -215,17 +222,20 @@ function main() {
 
   addActionsForHtmlUI();
   document.onkeydown = keydown;
-  canvas.addEventListener('mousemove', (ev) => {
+    canvas.addEventListener('mousemove', (ev) => {
 
-    // Normalize coordinates (-1 to 1 range)
-    const xRatio = (ev.clientX / canvas.width) * 2 - 1;
-    const yRatio = (ev.clientY / canvas.height) * 2 - 1;
+      // Normalize coordinates (-1 to 1 range)
+      if (g_camera) {
+      const xRatio = (ev.clientX / canvas.width) * 2 - 1;
+      const yRatio = (ev.clientY / canvas.height) * 2 - 1;
+  
+      g_globalAngleX = xRatio * 60;
+      g_globalAngleY = yRatio * 60;
+  
+      renderScene();
+      }
+    });
 
-    g_globalAngleX = xRatio * 40;
-    g_globalAngleY = yRatio * 40;
-
-    renderScene();
-  });
   canvas.addEventListener('click', (event) => {
     const isShiftClick = event.shiftKey;
     if (isShiftClick) {

@@ -85,7 +85,7 @@ function drawMap() {
                 else {
                     sizeScale = [.75, .75, .75]
                 }
-                body.matrix.translate((x - 2) * sizeScale[0], -1 + wallObj.height[s] * sizeScale[1], (y - 2) * sizeScale[2]);
+                body.matrix.translate((x - 4) * sizeScale[0], -1 + wallObj.height[s] * sizeScale[1], (y - 4) * sizeScale[2]);
                 body.matrix.scale(sizeScale[0], sizeScale[1], sizeScale[2]);
                 body.textureNum = wallObj.textureN[s];
                 body.renderFastUV();
@@ -96,16 +96,16 @@ function drawMap() {
 
 function drawFloor() {
     var floor = new Cube();
-    floor.color = [2, .3, .2, 1];
+    floor.color = [.5,.5,.5, 1];
     floor.matrix.translate(0, -1.0001, 0);
     floor.matrix.scale(100, 0, 100);
     floor.matrix.translate(-.5, 1, -.5);
-    floor.renderWShading();
+    floor.renderFastUV();
 }
 
 function drawSky() {
     var sky = new Cube();
-    sky.color = [0, 0, 1.0, 1];
+    sky.color = [1, 1, 1.0, 1];
     sky.matrix.scale(80, 80, 80);
     sky.matrix.translate(-.5, -.5, -.5);
     sky.renderWShading();
@@ -161,36 +161,39 @@ function createInnerWalls() {
         // if (x == (innerWallSizeX - outerMInnerX) / 2 || x == 1 + (innerWallSizeX - outerMInnerX) / 2) {
         //     continue;
         // }
-        g_map[x][outerMInnerY] = new Wall({ textureN: [-2, -2], height: [0, 1.01], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .4, .75], [.75, .3, .75]] });
+        g_map[x][outerMInnerY] = new Wall({ textureN: [-2, -2], height: [0, 1.5], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .3, .75], [.75, .2, .75]] });
     }
     // // back
     for (x = outerMInnerX; x < innerWallSizeX; x++) {
         // if (x == (innerWallSizeY - outerMInnerY) / 2 || x == 1 + (innerWallSizeY - outerMInnerY) / 2) {
         //     continue;
         // }
-        g_map[x][innerWallSizeY - 1] = new Wall({ textureN: [-2, -2], height: [0, 1.01], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .4, .75], [.75, .3, .75]] });
+        g_map[x][innerWallSizeY - 1] = new Wall({ textureN: [-2, -2], height: [0, 1.5], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .3, .75], [.75, .2, .75]] });
     }
     // // // right - the map is fliped left to right
     for (y = outerMInnerY; y < innerWallSizeY; y++) {
-        if (y < outerMInnerY + 5|| y > innerWallSizeY -5) {
-            g_map[outerMInnerX][y] = new Wall({ textureN: [-2, -2], height: [0, 1.01], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .4, .75], [.75, .3, .75]] });
+        if (y == outerMInnerY + 5 || y == innerWallSizeY - 5) {
+            continue;
+        }
+        if (y < outerMInnerY + 7|| y > innerWallSizeY -7) {
+            g_map[outerMInnerX][y] = new Wall({ textureN: [-2, -2], height: [0, 1.5], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .3, .75], [.75, .2, .75]] });
         }
         else {
             g_map[outerMInnerX][y] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
         }
     }
-    // //     // right - the map is fliped left to right
+    // right - the map is fliped left to right
     for (y = outerMInnerY; y < innerWallSizeY; y++) {
-        if (y < outerMInnerY + 5 || y > innerWallSizeY -5) {
-            g_map[innerWallSizeX - 1][y] = new Wall({ textureN: [-2, -2], height: [0, 1.01], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .4, .75], [.75, .3, .75]] });
+        if (y < outerMInnerY + 7 || y > innerWallSizeY -7) {
+            g_map[innerWallSizeX - 1][y] = new Wall({ textureN: [-2, -2], height: [0, 1.5], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .3, .75], [.75, .2, .75]] });
         }
         else {
             g_map[innerWallSizeX - 1][y] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
         }
     }
-    // // wall be hind counter
+    // // wall behind counter
     for (x = outerMInnerX; x < innerWallSizeX; x++) {
-        g_map[x][outerMInnerY+5] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
-        g_map[x][innerWallSizeY-5] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
+        g_map[x][outerMInnerY+7] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
+        g_map[x][innerWallSizeY-7] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
     }
 }

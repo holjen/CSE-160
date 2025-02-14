@@ -7,35 +7,30 @@
 </head>
 
 <body onload="main()">
-  <div style="display: flex; align-items: center;">
-    <canvas id="webgl" width="500" height="500">
-      Please use a browser that supports "canvas"
-    </canvas>
-  </div>
+
+  <canvas id="webgl" width="500" height="500">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <pre style="color: black;">
+    Title: Hospital Unit D2
+  </pre>
   <p id="fps">XXX</p>
   <!-- Clear Button -->
-   Animation:
+  Camera Perspetive Rotation:
   <button type="button" id="animationOn">On</button>
   <button type="button" id="animationOff">Off</button>
-  <!-- RGB Sliders for Color -->
-  <br><br>
-  <div style="display: flex; align-items: center;">
-    <label for="Cam">Camera Angle</label>
-    <input type="range" id="Cam" name="Cam" min="0" max="360" value="330" />
-    <label for="MainWing">Main Wing</label>
-    <input type="range" id="MainWing" name="MainWing" min="120" max="250" value="225" />
-    <label for="MidWing">Middle of Wing</label>
-    <input type="range" id="MidWing" name="MidWing" min="250" max="360" value="270" />
-    <label for="TipWing">Tip of Wing</label>
-    <input type="range" id="TipWing" name="TipWing" min="-45" max="120" value="50" />
-  </div>
-  <pre>
-    I attempted all bonus points.
-    Each wing has 3 moving parts.
-    The feathers and beak are made of cones.
-    Shift-Click to turn on/off blink.
-    Camera rotates when mouse is on canvas
 
+  <pre>
+    Story:
+    When I was in the hospital, every morning I would take a walk around the unit.
+    Each door is a patients room, and the building in the center is the nursing station.
+    I would greet everyone each morning while walking laps around the unit.
+    The two patients in blue also like to take walks at the same time as me.
+    The nurses are the ones dressed in gray.
+
+    Note to Grader:
+    I attempte all points except add/delete blocks.
+    The doors are made from two seperate textures. The walls are their own texture.
   </pre>
 
   <script src="../lib/webgl-utils.js"></script>
@@ -43,9 +38,8 @@
   <script src="../lib/cuon-utils.js"></script>
   <script src="../lib/cuon-matrix-cse160.js"></script>
   <script src="Triangle.js"></script>
-  <script src="Cone.js"></script>
   <script src="Cube.js"></script>
-  <script src="Swan.js"></script>
+  <script src="Human.js"></script>
   <script src="HtmlHelper.js"></script>
   <script src="InitWebGl.js"></script>
   <script src="Map.js"></script>

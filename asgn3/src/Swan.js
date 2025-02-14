@@ -14,35 +14,35 @@ function renderHead() {
     head.matrix.translate(-.6, 0.05, .025);
     head.matrix.rotate(120, 0, 0, 1);
     head.matrix.scale(0.1, .1, .1);
-    head.render();
+    head.renderWShading();
   
     var head2 = new Cube();
     head2.color = [1, .8, 1, 1];
     head2.matrix.translate(-.5, .1, 0);
     head2.matrix.rotate(120, 0, 0, 1);
     head2.matrix.scale(.15, .15, .15);
-    head2.render();
+    head2.renderWShading();
   
     var eye = new Cube();
     eye.color = [0, 0, 0, 1];
     eye.matrix.translate(-.57, .13, -.03);
     eye.matrix.rotate(120, 0, 0, 1);
     eye.matrix.scale(g_eye_x, .05, .2);
-    eye.render();
+    eye.renderWShading();
   
     var eye2 = new Cube();
     eye2.color = [1, 1, 1, 1];
     eye2.matrix.translate(-.59, .13, -.031);
     eye2.matrix.rotate(120, 0, 0, 1);
     eye2.matrix.scale(g_pupilx, .025, .21);
-    eye2.render();
+    eye2.renderWShading();
   
     var neck = new Cube();
     neck.color = [1, .8, 1, 1];
     neck.matrix.translate(-0.5, -.3, 0);
     neck.matrix.rotate(15, 0, 0, 1);
     neck.matrix.scale(.1, .45, .15);
-    neck.render();
+    neck.renderWShading();
     var beak = new Cone();
     beak.color = [1, .5, 0, 1];
     beak.height = .15;
@@ -69,7 +69,7 @@ function renderHead() {
     belly.color = [1, .8, 1, 1];
     belly.matrix.translate(-0.5, -.5, -.05);
     belly.matrix.scale(.65, .25, .25);
-    belly.render();
+    belly.renderWShading();
   
     for (let i = 0; i < 6; i++) {
       createBodyFeathers([-0.45 + i / 10, -.45, 0.2], [250, 0, 0, 1]);
@@ -99,7 +99,7 @@ function renderHead() {
     feather.matrix.translate(loc[0], loc[1], loc[2]);
     feather.matrix.rotate(r[0], r[1], r[2], r[3]);
     feather.matrix.scale(s[0], s[1], s[2]);
-    feather.render();
+    feather.renderWShading();
   }
   
   function renderLeftWing() {
@@ -109,7 +109,7 @@ function renderHead() {
     wingMain.matrix.rotate(g_mainWingAngle, 1, 0, 0)
     var wingMainLoc = new Matrix4(wingMain.matrix);
     wingMain.matrix.scale(.15, .05, .45);
-    wingMain.render();
+    wingMain.renderWShading();
   
     var wingMid = new Cube();
     wingMid.matrix = new Matrix4(wingMainLoc);
@@ -118,7 +118,7 @@ function renderHead() {
     wingMid.matrix.rotate(g_midWingAngle, 1, 0, 0);
     var wingMidLoc = new Matrix4(wingMid.matrix);
     wingMid.matrix.scale(.15, .05, .35);
-    wingMid.render();
+    wingMid.renderWShading();
   
     var wingTip = new Cube();
     wingTip.matrix = new Matrix4(wingMidLoc);
@@ -127,7 +127,7 @@ function renderHead() {
     wingTip.matrix.rotate(g_tipWingAngle, 1, 0, 0);
     var wingTipLoc = new Matrix4(wingTip.matrix);
     wingTip.matrix.scale(.15, .05, .2);
-    wingTip.render();
+    wingTip.renderWShading();
   
     // feathers along the main wing
     for (let i = 0; i < 10; i++) {
@@ -148,7 +148,7 @@ function renderHead() {
     wingMain.matrix.rotate(180, 0, 1, 0).rotate(g_mainWingAngle, 1, 0, 0)
     var wingMainLoc = new Matrix4(wingMain.matrix);
     wingMain.matrix.scale(.15, .05, .45);
-    wingMain.render();
+    wingMain.renderWShading();
     var wingMid = new Cube();
     wingMid.matrix = new Matrix4(wingMainLoc);
     wingMid.color = [1, .5, 1, g_showBone];
@@ -156,7 +156,7 @@ function renderHead() {
     wingMid.matrix.rotate(g_midWingAngle, 1, 0, 0);
     var wingMidLoc = new Matrix4(wingMid.matrix);
     wingMid.matrix.scale(.15, .05, .35);
-    wingMid.render();
+    wingMid.renderWShading();
   
     var wingTip = new Cube();
     wingTip.matrix = new Matrix4(wingMidLoc);
@@ -165,7 +165,7 @@ function renderHead() {
     wingTip.matrix.rotate(g_tipWingAngle, 1, 0, 0);
     var wingTipLoc = new Matrix4(wingTip.matrix);
     wingTip.matrix.scale(.15, .05, .2);
-    wingTip.render();
+    wingTip.renderWShading();
   
     for (let i = 0; i < 10; i++) {
       createFeather(wingMainLoc, [0.1, -.05, .05 + i / 20], [.2 + i / 50, .05, .05], [180, 0, 1, 0]);
