@@ -61,11 +61,21 @@ function setupWebGL() {
     // Get the storage location of u_Sampler
     u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
     if (!u_Sampler0) {
+      console.log('Failed to get the storage location of u_Sampler0');
+      return false;
+    }
+    u_Sampler1 = gl.getUniformLocation(gl.program, 'u_Sampler1');
+    if (!u_Sampler1) {
       console.log('Failed to get the storage location of u_Sampler');
       return false;
     }
+    u_Sampler2 = gl.getUniformLocation(gl.program, 'u_Sampler2');
+    if (!u_Sampler1) {
+      console.log('Failed to get the storage location of u_Sampler2');
+      return false;
+    }
     u_whichTexture = gl.getUniformLocation(gl.program, 'u_whichTexture');
-    if (!u_Sampler0) {
+    if (!u_whichTexture) {
       console.log('Failed to get the storage location of u_whichTexture');
       return false;
     }

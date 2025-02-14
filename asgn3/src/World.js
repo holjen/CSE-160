@@ -19,6 +19,8 @@ var FSHADER_SOURCE = `
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
   uniform sampler2D u_Sampler0;
+  uniform sampler2D u_Sampler1;
+  uniform sampler2D u_Sampler2;
   uniform int u_whichTexture;
   void main() {
   if (u_whichTexture == -2) {
@@ -27,6 +29,10 @@ var FSHADER_SOURCE = `
     gl_FragColor =  vec4(v_UV, 1.0, 1.0);
   } else if (u_whichTexture == 0) {
     gl_FragColor = texture2D(u_Sampler0, v_UV);
+  } else if (u_whichTexture == 1) {
+    gl_FragColor = texture2D(u_Sampler1, v_UV);
+  } else if (u_whichTexture == 2) {
+    gl_FragColor = texture2D(u_Sampler2, v_UV);
   } else {
     gl_FragColor = vec4(1,.2,.2,1); 
   }
@@ -44,13 +50,15 @@ let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_GlobalRotateMatrix;
 let u_Sampler0;
+let u_Sampler1;
+let u_Sampler2;
 let u_whichTexture;
 
 let g_globalAngleX = -30;
 let g_globalAngleY = 0;
 
-// let g_eye = new Vector3([-3, -1, 3]);
-// let g_at = new Vector3([500, 0, -100]);
+// let g_eye = new Vector3([1.4, 0, -.3]);
+// let g_at = new Vector3([0, 1, 1]);
 // let g_up = new Vector3([0, 1, 0]);
 let g_eye = new Vector3([0, 0, 0]);
 let g_at = new Vector3([0, 0, -1]);
@@ -90,8 +98,8 @@ function renderScene() {
   // renderRightWing();
 
   var head2 = new Cube();
-  head2.matrix.scale(0.6, .6, .6);
-  head2.matrix.translate(0, -.5, 0);
+  //head2.matrix.scale(0.6, .6, .6);
+  head2.matrix.translate(0, .75, 0);
   head2.textureNum = 0;
   head2.renderFastUV();
 
@@ -104,38 +112,44 @@ function renderScene() {
 }
 
 function initTextures() {
-  var image = new Image();  // Create the image object
-  if (!image) {
-    console.log('Failed to create the image object');
+  var image0 = new Image(); 
+  var image1 = new Image();
+  var image2 = new Image();
+  if (!image0 || !image1) {
+    console.log('Failed to create the image objects');
     return false;
   }
-  // Register the event handler to be called on loading an image
-  image.onload = function () { sendImageToTEXTURE0(image); };
-  // Tell the browser to load an image
-  image.src = 'wave.png';
+  // Register the event handler to be called on loading an image0
+  image0.onload = function () { sendImageToTEXTURE0(image0, 0, u_Sampler0); };
+  // Tell the browser to load an image0
+  image0.src = 'doorbot.png';
+
+  image1.onload = function () { sendImageToTEXTURE0(image1, 1, u_Sampler1); };
+  image1.src = 'doortop.png';
+  image2.onload = function () { sendImageToTEXTURE0(image2, 2, u_Sampler2); };
+  image2.src = 'whiteWall.png';
   return true;
 }
 
-function sendImageToTEXTURE0(image) {
+function sendImageToTEXTURE0(image, textureUnit, sampler) {
   var texture = gl.createTexture();   // Create a texture object
   if (!texture) {
     console.log('Failed to create the texture object');
     return false;
   }
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image0's y axis
   // Enable texture unit0
-  gl.activeTexture(gl.TEXTURE0);
+  gl.activeTexture(gl.TEXTURE0 + textureUnit);
   // Bind the texture object to the target
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   // Set the texture parameters
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  // Set the texture image
+  // Set the texture image0
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
 
   // Set the texture unit 0 to the sampler
-  gl.uniform1i(u_Sampler0, 0);
-
+  gl.uniform1i(sampler, textureUnit);
   console.log('finished loadTexture');
 }
 
@@ -189,9 +203,9 @@ function keydown(ev) {
     temp_eye.add(newVecD);
     g_at.set(temp_eye);
   }
-  console.log("button pressed: "+ ev.key);
-  console.log(g_eye);
-  console.log(g_at);
+  // console.log("button pressed: "+ ev.key);
+  // console.log(g_eye);
+  // console.log(g_at);
 }
 
 function main() {
