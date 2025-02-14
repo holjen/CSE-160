@@ -55,7 +55,7 @@ function drawTriangle3D(vertices) {
     // var vertices = new Float32Array([
     //   0, 0.5,   -0.5, -0.5,   0.5, -0.5
     // ]);
-    var n = vertices.length/3; // The number of vertices
+    var n = vertices.length / 3; // The number of vertices
 
     // Create a buffer object
     var vertexBuffer = gl.createBuffer();
@@ -83,7 +83,7 @@ function drawTriangle3DUV(vertices, uv) {
     // var vertices = new Float32Array([
     //   0, 0.5,   -0.5, -0.5,   0.5, -0.5
     // ]);
-    var n = vertices.length/3; // The number of vertices
+    var n = vertices.length / 3; // The number of vertices
     //var n = 3;
     // Create a buffer object
     var vertexBuffer = gl.createBuffer();

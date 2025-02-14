@@ -96,7 +96,7 @@ function drawMap() {
 
 function drawFloor() {
     var floor = new Cube();
-    floor.color = [.5,.5,.5, 1];
+    floor.color = [.5, .5, .5, 1];
     floor.matrix.translate(0, -1.0001, 0);
     floor.matrix.scale(100, 0, 100);
     floor.matrix.translate(-.5, 1, -.5);
@@ -175,7 +175,7 @@ function createInnerWalls() {
         if (y == outerMInnerY + 5 || y == innerWallSizeY - 5) {
             continue;
         }
-        if (y < outerMInnerY + 7|| y > innerWallSizeY -7) {
+        if (y < outerMInnerY + 7 || y > innerWallSizeY - 7) {
             g_map[outerMInnerX][y] = new Wall({ textureN: [-2, -2], height: [0, 1.5], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .3, .75], [.75, .2, .75]] });
         }
         else {
@@ -184,7 +184,7 @@ function createInnerWalls() {
     }
     // right - the map is fliped left to right
     for (y = outerMInnerY; y < innerWallSizeY; y++) {
-        if (y < outerMInnerY + 7 || y > innerWallSizeY -7) {
+        if (y < outerMInnerY + 7 || y > innerWallSizeY - 7) {
             g_map[innerWallSizeX - 1][y] = new Wall({ textureN: [-2, -2], height: [0, 1.5], color: [[149 / 255, 69 / 255, 53 / 255, 1.0], [1, .99, .75, 1.0]], size: [[.75, .3, .75], [.75, .2, .75]] });
         }
         else {
@@ -193,7 +193,7 @@ function createInnerWalls() {
     }
     // // wall behind counter
     for (x = outerMInnerX; x < innerWallSizeX; x++) {
-        g_map[x][outerMInnerY+7] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
-        g_map[x][innerWallSizeY-7] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
+        g_map[x][outerMInnerY + 7] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
+        g_map[x][innerWallSizeY - 7] = new Wall({ textureN: [2, 2, 2, 2], height: [0, 1, 2, 3] });
     }
 }
