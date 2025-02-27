@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Change a point color</title>
+</head>
+
+<body onload="main()">
+
+  <canvas id="webgl" width="500" height="500">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <pre style="color: black;">
+    Title: Hospital Unit D2
+  </pre>
+  <p id="fps">XXX</p>
+  <!-- Clear Button -->
+  <pre>
+    WASD to move
+    QE to look left/right.
+    Click on buttons below to allow mouse to move perspective on canvas.
+   </pre>
+  Camera Perspetive Rotation:
+  <button type="button" id="animationOn">On</button>
+  <button type="button" id="animationOff">Off</button>
+
+  <pre>
+    Story:
+    When I was in the hospital, every morning I would take a walk around the unit.
+    Each door is a patients room, and the building in the center is the nursing station.
+    I would greet everyone each morning while walking laps around the unit.
+    The two patients in blue also like to take walks at the same time as me.
+    The nurses are the ones dressed in gray.
+
+    Note to Grader:
+    I attempte all points except add/delete blocks.
+    The doors are made from two seperate textures. The walls are their own texture.
+  </pre>
+
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/cuon-matrix-cse160.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Cube.js"></script>
+  <script src="Human.js"></script>
+  <script src="HtmlHelper.js"></script>
+  <script src="InitWebGl.js"></script>
+  <script src="Map.js"></script>
+  <script src="World.js"></script>
+</body>
+
+</html>
