@@ -53,6 +53,12 @@ function connectVariablesToGLSL() {
     console.log('Failed to get the storage location of u_lightPos');
     return;
   }
+
+  u_cameraPos = gl.getUniformLocation(gl.program, 'u_cameraPos');
+  if (!u_lightPos) {
+    console.log('Failed to get the storage location of u_cameraPos');
+    return;
+  }
   u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
   if (!u_ModelMatrix) {
     console.log('Failed to get the storage location of u_ModelMatrix');

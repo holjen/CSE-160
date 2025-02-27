@@ -75,14 +75,10 @@ function drawSky() {
     // sky.renderWShading();
     var sky = new Cube();
     if (g_normalOn) sky.textureNum = -3;
-    sky.color = [.5, 1, 1.0, 1];
-    sky.matrix.scale(-15, -10, -15);
+    sky.color = [.5, .5, .5, 1];
+    sky.matrix.scale(-10, -10, -10);
     sky.matrix.translate(-1, -.5, -.5);
-    if (g_normalOn) {
-        sky.renderFastUVNormal();
-    } else {
-        sky.renderWShading();
-    }
+    sky.renderFastUVNormal();
     //sky.renderWShading();
 }
 

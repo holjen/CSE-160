@@ -29,6 +29,7 @@ var FSHADER_SOURCE = `
   uniform sampler2D u_Sampler2;
   uniform int u_whichTexture;
   uniform vec3 u_lightPos;
+  uniform vec3 u_cameraPos;
   varying vec4 v_VertPos;
   void main() {
     if (u_whichTexture == -3) {
@@ -46,13 +47,29 @@ var FSHADER_SOURCE = `
     } else {
       gl_FragColor = vec4(1,.2,.2,1); 
     }
-    vec3 lightVector = vec3(v_VertPos)-u_lightPos;
+    vec3 lightVector = u_lightPos-vec3(v_VertPos);
     float r=length(lightVector);
-    if (r<1.0) {
-      gl_FragColor=vec4(1,0,0,1);
-    } else if (r<2.0) {
-      gl_FragColor=vec4(0,1,0,1); 
-    }
+    // if (r<1.0) {
+    //   gl_FragColor=vec4(1,0,0,1);
+    // } else if (r<2.0) {
+    //   gl_FragColor=vec4(0,1,0,1); 
+    // }
+    
+    // N dot L
+    vec3 L = normalize(lightVector);
+    vec3 N = normalize(v_Normal);
+    float nDotL = max(dot(N,L),0.0);
+
+    // reflection
+    vec3 R = reflect(-L,N);
+
+    // eye
+    vec3 E = normalize(u_cameraPos - vec3(v_VertPos));
+
+    vec3 diffuse = vec3(gl_FragColor) * nDotL;
+    vec3 ambient = vec3(gl_FragColor)*0.3;
+    float specular = pow(max(dot(E,R),0.0),2.0);
+    gl_FragColor = vec4(specular+diffuse+ambient, 1.0);
 
   }`;
 
@@ -129,16 +146,18 @@ function renderScene() {
   //cuber.renderFastUVNormal();
 
   var spherer = new Sphere();
-  spherer.matrix.translate(8, 1, 0);
+  spherer.matrix.translate(8, -.5, 0);
+  spherer.textureNum = 0;
   if (g_normalOn) spherer.textureNum = -3;
   spherer.render();
 
   gl.uniform3f(u_lightPos, g_lightPos[0], g_lightPos[1], g_lightPos[2]);
+  gl.uniform3f(u_cameraPos, g_eye[0], g_eye[1], g_eye[2]);
   var light = new Cube();
   light.color = [2, 2, 0, 1];
   // console.log(g_lightPos)
   light.matrix.translate(g_lightPos[0], g_lightPos[1], g_lightPos[2]);
-  light.matrix.scale(.1, .1, .1);
+  light.matrix.scale(-.1, -.1, -.1);
   light.matrix.translate(-.5, -.5, -.5);
   light.renderFastUVNormal();
   //drawFloor();
@@ -248,7 +267,7 @@ function keydown(ev) {
 function tick() {
   g_seconds = (performance.now() / 1000.0) - g_startTime;
   renderScene();
-  g_lightPos[0] = Math.cos(g_seconds) +7;
+  g_lightPos[2] = 2*Math.cos(g_seconds);
   requestAnimationFrame(tick);
 }
 function main() {
