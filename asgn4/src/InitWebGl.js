@@ -35,6 +35,12 @@ function connectVariablesToGLSL() {
     return;
   }
 
+  a_Normal = gl.getAttribLocation(gl.program, 'a_Normal');
+  if (a_Normal < 0) {
+    console.log('Failed to get the storage location of a_Normal');
+    return;
+  }
+
   // Get the storage location of u_FragColor
   u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
   if (!u_FragColor) {
@@ -42,6 +48,11 @@ function connectVariablesToGLSL() {
     return;
   }
 
+  // u_lightPos = gl.getUniformLocation(gl.program, 'u_lightPos');
+  // if (!u_lightPos) {
+  //   console.log('Failed to get the storage location of u_lightPos');
+  //   return;
+  // }
   u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
   if (!u_ModelMatrix) {
     console.log('Failed to get the storage location of u_ModelMatrix');

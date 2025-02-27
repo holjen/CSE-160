@@ -16,15 +16,23 @@
   </pre>
   <p id="fps">XXX</p>
   <!-- Clear Button -->
+  Camera Perspetive Rotation:
+  <button type="button" id="animationOn">On</button>
+  <button type="button" id="animationOff">Off</button>
+  <br></br>
+  Normal:
+  <button type="button" id="normalOn">On</button>
+  <button type="button" id="normalOff">Off</button>
+  <p>
+    Light X <input type="range" min="0" max="1000" value="700" class="slider" id="lightSlideX">
+    Light Y <input type="range" min="-150" max="350" value="180" class="slider" id="lightSlideY">
+    Light Z <input type="range" min="-150" max="2000" value="20" class="slider" id="lightSlideZ">
+  </p>
   <pre>
     WASD to move
     QE to look left/right.
     Click on buttons below to allow mouse to move perspective on canvas.
    </pre>
-  Camera Perspetive Rotation:
-  <button type="button" id="animationOn">On</button>
-  <button type="button" id="animationOff">Off</button>
-
   <pre>
     Story:
     When I was in the hospital, every morning I would take a walk around the unit.
@@ -48,6 +56,7 @@
   <script src="HtmlHelper.js"></script>
   <script src="InitWebGl.js"></script>
   <script src="Map.js"></script>
+  <script src="Sphere.js"></script>
   <script src="World.js"></script>
 </body>
 
