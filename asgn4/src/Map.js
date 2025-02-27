@@ -74,11 +74,16 @@ function drawSky() {
     // sky.matrix.translate(-.5, -.5, -.5);
     // sky.renderWShading();
     var sky = new Cube();
-    sky.textureNum = -3;
+    if (g_normalOn) sky.textureNum = -3;
     sky.color = [.5, 1, 1.0, 1];
     sky.matrix.scale(-15, -10, -15);
     sky.matrix.translate(-1, -.5, -.5);
-    sky.renderFastUVNormal();
+    if (g_normalOn) {
+        sky.renderFastUVNormal();
+    } else {
+        sky.renderWShading();
+    }
+    //sky.renderWShading();
 }
 
 function createOuterWalls() {
