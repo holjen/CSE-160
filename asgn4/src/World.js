@@ -8,13 +8,14 @@ var VSHADER_SOURCE = `
   varying vec3 v_Normal;
   varying vec4 v_VertPos;
   uniform mat4 u_ModelMatrix;
+  uniform mat4 u_NormalMatrix;
   uniform mat4 u_GlobalRotateMatrix;
   uniform mat4 u_ViewMatrix;
   uniform mat4 u_ProjectionMatrix;
   void main() {
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
     v_UV = a_UV;
-    v_Normal = a_Normal;
+    v_Normal = normalize(vec3(u_NormalMatrix * vec4(a_Normal,1)));
     v_VertPos = u_ModelMatrix * a_Position;
     }`;
 
@@ -30,6 +31,7 @@ var FSHADER_SOURCE = `
   uniform int u_whichTexture;
   uniform vec3 u_lightPos;
   uniform vec3 u_cameraPos;
+  uniform bool u_lightOn;
   varying vec4 v_VertPos;
   void main() {
     if (u_whichTexture == -3) {
@@ -49,11 +51,6 @@ var FSHADER_SOURCE = `
     }
     vec3 lightVector = u_lightPos-vec3(v_VertPos);
     float r=length(lightVector);
-    // if (r<1.0) {
-    //   gl_FragColor=vec4(1,0,0,1);
-    // } else if (r<2.0) {
-    //   gl_FragColor=vec4(0,1,0,1); 
-    // }
     
     // N dot L
     vec3 L = normalize(lightVector);
@@ -68,9 +65,19 @@ var FSHADER_SOURCE = `
 
     vec3 diffuse = vec3(gl_FragColor) * nDotL;
     vec3 ambient = vec3(gl_FragColor)*0.3;
-    float specular = pow(max(dot(E,R),0.0),2.0);
-    gl_FragColor = vec4(specular+diffuse+ambient, 1.0);
+    float specular = pow(max(dot(E,R),0.0),64.0) * .8;
 
+
+
+    gl_FragColor = vec4(specular+ambient, 1.0);
+    if (u_lightOn) {
+      if (u_whichTexture == 0) {
+        gl_FragColor = vec4(specular+ambient+diffuse, 1.0);
+      }
+      else {
+        gl_FragColor = vec4(diffuse+ambient, 1.0);
+      }
+    }
   }`;
 
 // Global Variables
@@ -78,9 +85,11 @@ let canvas;
 let gl;
 let a_Position;
 let a_UV;
+let a_Normal;
 let u_FragColor;
 let u_Size;
 let u_ModelMatrix;
+let u_NormalMatrix;
 let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_GlobalRotateMatrix;
@@ -88,6 +97,9 @@ let u_Sampler0;
 let u_Sampler1;
 let u_Sampler2;
 let u_whichTexture;
+let u_lightPos;
+let u_lightOn;
+let u_cameraPos;
 
 let g_globalAngleX = 0;
 let g_globalAngleY = 0;
@@ -96,6 +108,7 @@ let g_normalOn = false;
 let g_startTime = performance.now() / 1000.0;
 let g_seconds = 0;
 let g_lightPos = [7, 1.8, .2];
+let g_lightOn = true;
 
 // let g_eye = new Vector3([-4, 0, 6]);
 // let g_at = new Vector3([0, 1, 1]);
@@ -115,9 +128,9 @@ function convertMouseCoordinatesToGL(ev) {
 }
 
 function renderScene() {
+
   // Check the time at the start of this fuction
   var startTime = performance.now();
-
   var projMatrix = new Matrix4();
   projMatrix.setPerspective(50, 1 * canvas.width / canvas.height, 1, 100);
   gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMatrix.elements);
@@ -141,9 +154,9 @@ function renderScene() {
 
   var cuber = new Cube();
   if (g_normalOn) cuber.textureNum = -3;
-  cuber.matrix.translate(7, 1, 0);
+  cuber.matrix.translate(6, -1, -2);
   cuber.matrix.scale(.6, .6, .4);
-  //cuber.renderFastUVNormal();
+  cuber.renderFastUVNormal();
 
   var spherer = new Sphere();
   spherer.matrix.translate(8, -.5, 0);
@@ -152,10 +165,11 @@ function renderScene() {
   spherer.render();
 
   gl.uniform3f(u_lightPos, g_lightPos[0], g_lightPos[1], g_lightPos[2]);
-  gl.uniform3f(u_cameraPos, g_eye[0], g_eye[1], g_eye[2]);
+  gl.uniform3f(u_cameraPos, g_eye.elements[0], g_eye.elements[1], g_eye.elements[2]);
+
+  gl.uniform1i(u_lightOn, g_lightOn);
   var light = new Cube();
   light.color = [2, 2, 0, 1];
-  // console.log(g_lightPos)
   light.matrix.translate(g_lightPos[0], g_lightPos[1], g_lightPos[2]);
   light.matrix.scale(-.1, -.1, -.1);
   light.matrix.translate(-.5, -.5, -.5);
@@ -251,7 +265,6 @@ function keydown(ev) {
     g_at.set(temp_eye);
   }
   else if (ev.key === "e" || ev.key === "E") {
-    console.log("i am pressed")
     let rotationMatrix = new Matrix4();
     rotationMatrix.setRotate(-5, g_up.elements[0], g_up.elements[1], g_up.elements[2]);
     let newVecD = rotationMatrix.multiplyVector3(vecD);
@@ -260,14 +273,11 @@ function keydown(ev) {
     temp_eye.add(newVecD);
     g_at.set(temp_eye);
   }
-  // console.log("button pressed: "+ ev.key);
-  // console.log(g_eye);
-  // console.log(g_at);
 }
 function tick() {
   g_seconds = (performance.now() / 1000.0) - g_startTime;
   renderScene();
-  g_lightPos[2] = 2*Math.cos(g_seconds);
+  //g_lightPos[2] = 2 * Math.cos(g_seconds);
   requestAnimationFrame(tick);
 }
 function main() {
