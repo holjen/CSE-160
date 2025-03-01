@@ -24,21 +24,21 @@ function renderHead(location, skinColor) {
     head.matrix.rotate(location.rotation[0], location.rotation[1], location.rotation[2], location.rotation[3]);
     var headLoc = new Matrix4(head.matrix);
     head.matrix.scale(0.6, .6, .4);
-    head.renderWShading();
+    head.renderFastUVNormal();
 
     var eye1 = new Cube();
     eye1.color = [0,0,0,1];
     eye1.matrix = new Matrix4(headLoc);
     eye1.matrix.translate(.1,0.3,-0.001);
     eye1.matrix.scale(.1,.15,.15);
-    eye1.renderWShading();
+    eye1.renderFastUVNormal();
 
     var eye2 = new Cube();
     eye2.color = [0,0,0,1];
     eye2.matrix = new Matrix4(headLoc);
     eye2.matrix.translate(.4,0.3,-.001);
     eye2.matrix.scale(.1,.15,.15);
-    eye2.renderWShading();
+    eye2.renderFastUVNormal();
 
     var neck = new Cube();
     neck.color = skinColor;
@@ -46,7 +46,7 @@ function renderHead(location, skinColor) {
     neck.matrix.translate(.21,.5,0.3);
     neck.matrix.rotate(90,0,1,0);
     neck.matrix.scale(.2,.2,.2);
-    neck.renderWShading();
+    neck.renderFastUVNormal();
     return headLoc;
 }
 
@@ -56,7 +56,7 @@ function renderShirt(headLoc, shirtColor) {
     shirt.matrix = new Matrix4(headLoc);
     shirt.matrix.translate(0.05,.7,0);
     shirt.matrix.scale(.55,.6,.4);
-    shirt.renderWShading();
+    shirt.renderFastUVNormal();
 
     var sleeve1 = new Cube();
     sleeve1.color = shirtColor;
@@ -64,7 +64,7 @@ function renderShirt(headLoc, shirtColor) {
     sleeve1.matrix.translate(-.23,.93,0);
     sleeve1.matrix.rotate(-40,0,0,1);
     sleeve1.matrix.scale(.35,.25,.4);
-    sleeve1.renderWShading(); 
+    sleeve1.renderFastUVNormal(); 
     
     var sleeve2 = new Cube();
     sleeve2.color = shirtColor;
@@ -72,7 +72,7 @@ function renderShirt(headLoc, shirtColor) {
     sleeve2.matrix.translate(.61,.7,0);
     sleeve2.matrix.rotate(40,0,0,1);
     sleeve2.matrix.scale(.35,.25,.4);
-    sleeve2.renderWShading();
+    sleeve2.renderFastUVNormal();
 }
 
 function renderArms(headLoc, skinColor) {
@@ -82,7 +82,7 @@ function renderArms(headLoc, skinColor) {
     arm1.matrix.translate(-.34,1.05,0.05);
     arm1.matrix.rotate(-40,0,0,1);
     arm1.matrix.scale(.15,.18,.3);
-    arm1.renderWShading();
+    arm1.renderFastUVNormal();
 
     var arm2 = new Cube();
     arm2.color = skinColor;
@@ -90,7 +90,7 @@ function renderArms(headLoc, skinColor) {
     arm2.matrix.translate(.86,.95,0.05);
     arm2.matrix.rotate(40,0,0,1);
     arm2.matrix.scale(.15,.18,.3);
-    arm2.renderWShading();
+    arm2.renderFastUVNormal();
 }
 
 function renderPants(headLoc, pantsColor) {
@@ -99,7 +99,7 @@ function renderPants(headLoc, pantsColor) {
     pantsHip.matrix = new Matrix4(headLoc);
     pantsHip.matrix.translate(.06,1.3,0);
     pantsHip.matrix.scale(.55,.3,.4);
-    pantsHip.renderWShading();
+    pantsHip.renderFastUVNormal();
 
     var leg = new Cube();
     leg.color = pantsColor;
@@ -107,14 +107,14 @@ function renderPants(headLoc, pantsColor) {
     leg.matrix.translate(0.33,1.5,-0.001);
     leg.matrix.rotate(-80 +180,0,0,1);
     leg.matrix.scale(.45,.25,.4);
-    leg.renderWShading();
+    leg.renderFastUVNormal();
 
     leg.matrix = new Matrix4(headLoc);
     leg.color = pantsColor;
     leg.matrix.translate(.43,1.95,-0.001);
     leg.matrix.rotate(180+80,0,0,1);
     leg.matrix.scale(.45,.25,.4);
-    leg.renderWShading();
+    leg.renderFastUVNormal();
 }
 
 function renderShoes(headLoc){
@@ -124,13 +124,13 @@ function renderShoes(headLoc){
     shoes.matrix.translate(0,2,0);
     shoes.matrix.rotate(-80,0,0,1);
     shoes.matrix.scale(.15,.21,.4);
-    shoes.renderWShading();
+    shoes.renderFastUVNormal();
 
     shoes.matrix = new Matrix4(headLoc);
     shoes.matrix.translate(.66,1.85,0);
     shoes.matrix.rotate(80,0,0,1);
     shoes.matrix.scale(.15,.21,.4);
-    shoes.renderWShading();
+    shoes.renderFastUVNormal();
 }
 
 function renderHair(headLoc, cosmetics, hairLength) {
@@ -140,29 +140,29 @@ function renderHair(headLoc, cosmetics, hairLength) {
     hair.matrix = new Matrix4(headLoc);
     hair.matrix.translate(0,-.1,-.1);
     hair.matrix.scale(.6,.1,.5);
-    hair.renderWShading();
+    hair.renderFastUVNormal();
 
     // bangs
     hair.matrix = new Matrix4(headLoc);
     hair.matrix.translate(-0.01,-.02,-.1);
     hair.matrix.scale(.61,.15,.1);
-    hair.renderWShading();
+    hair.renderFastUVNormal();
     //left side of hair
     hair.matrix = new Matrix4(headLoc);
     hair.matrix.translate(.6,-.1,-.1);
     hair.matrix.scale(.05,.38 * hairLength,.5);
-    hair.renderWShading();
+    hair.renderFastUVNormal();
 
     // right side of hair
     hair.matrix = new Matrix4(headLoc);
     hair.matrix.translate(-.05,-.1,-.1);
     hair.matrix.scale(.05,.38 * hairLength,.5);
-    hair.renderWShading();
+    hair.renderFastUVNormal();
     // back of hair
     hair.matrix = new Matrix4(headLoc);
     hair.matrix.translate(-0.05,-.1,.4);
     hair.matrix.scale(.7,.6 * hairLength,.1);
-    hair.renderWShading();
+    hair.renderFastUVNormal();
 }
 
 function renderHuman(location, cosmetics) {

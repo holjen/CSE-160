@@ -52,7 +52,8 @@ function drawMap() {
                 body.matrix.translate((x - 4) * sizeScale[0], -1 + wallObj.height[s] * sizeScale[1], (y - 4) * sizeScale[2]);
                 body.matrix.scale(sizeScale[0], sizeScale[1], sizeScale[2]);
                 body.textureNum = wallObj.textureN[s];
-                body.renderFastUV();
+                if (g_normalOn) body.textureNum = -3;
+                body.renderFastUVNormal();
             }
         }
     }
@@ -64,21 +65,23 @@ function drawFloor() {
     floor.matrix.translate(0, -1.0001, 0);
     floor.matrix.scale(100, 0, 100);
     floor.matrix.translate(-.5, 1, -.5);
-    floor.renderFastUV();
+    if (g_normalOn) floor.textureNum = -3;
+    floor.renderFastUVNormal();
 }
 
 function drawSky() {
-    // var sky = new Cube();
-    // sky.color = [1, 1, 1.0, 1];
-    // sky.matrix.scale(-80, -80, -80);
-    // sky.matrix.translate(-.5, -.5, -.5);
-    // sky.renderWShading();
     var sky = new Cube();
+    sky.color = [.7, .7, .7, 1];
+    sky.matrix.scale(-80, -80, -80);
+    sky.matrix.translate(-.5, -.5, -.5);
     if (g_normalOn) sky.textureNum = -3;
-    sky.color = [.5, .5, .5, 1];
-    sky.matrix.scale(-10, -10, -10);
-    sky.matrix.translate(-1, -.5, -.5);
     sky.renderFastUVNormal();
+    // var sky = new Cube();
+    // if (g_normalOn) sky.textureNum = -3;
+    // sky.color = [.5, .5, .5, 1];
+    // sky.matrix.scale(-10, -10, -10);
+    // sky.matrix.translate(-1, -.5, -.5);
+    // sky.renderFastUVNormal();
     //sky.renderWShading();
 }
 

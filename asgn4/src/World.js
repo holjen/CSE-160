@@ -33,6 +33,7 @@ var FSHADER_SOURCE = `
   uniform vec3 u_cameraPos;
   uniform bool u_lightOn;
   varying vec4 v_VertPos;
+  uniform vec3 u_lightColor;
   void main() {
     if (u_whichTexture == -3) {
       gl_FragColor = vec4((v_Normal+1.0)/2.0, 1.0);
@@ -63,15 +64,12 @@ var FSHADER_SOURCE = `
     // eye
     vec3 E = normalize(u_cameraPos - vec3(v_VertPos));
 
-    vec3 diffuse = vec3(gl_FragColor) * nDotL;
-    vec3 ambient = vec3(gl_FragColor)*0.3;
-    float specular = pow(max(dot(E,R),0.0),64.0) * .8;
+    vec3 diffuse = vec3(gl_FragColor) * u_lightColor * nDotL;
+    vec3 ambient = vec3(gl_FragColor) * 0.3;
+    vec3 specular = u_lightColor * pow(max(dot(E,R),0.0),64.0) * .8;
 
-
-
-    gl_FragColor = vec4(specular+ambient, 1.0);
     if (u_lightOn) {
-      if (u_whichTexture == 0) {
+      if (u_whichTexture != 2 && u_FragColor != vec4(.5, .5, .5, 1) && u_FragColor != vec4(.7, .7, .7, 1)) {
         gl_FragColor = vec4(specular+ambient+diffuse, 1.0);
       }
       else {
@@ -100,6 +98,7 @@ let u_whichTexture;
 let u_lightPos;
 let u_lightOn;
 let u_cameraPos;
+let u_lightColor;
 
 let g_globalAngleX = 0;
 let g_globalAngleY = 0;
@@ -109,6 +108,7 @@ let g_startTime = performance.now() / 1000.0;
 let g_seconds = 0;
 let g_lightPos = [7, 1.8, .2];
 let g_lightOn = true;
+let g_lightColor = [1,1,1];
 
 // let g_eye = new Vector3([-4, 0, 6]);
 // let g_at = new Vector3([0, 1, 1]);
@@ -145,12 +145,12 @@ function renderScene() {
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  //renderHuman(new locationAttributes({ location: [8, 1.0, -1], rotation: [90, 0, 1, 0] }), new cosmeticAttributes());
-  // renderHuman(new locationAttributes({ location: [21, 1.0, 13], rotation: [180, 0, 1, 0] }), new cosmeticAttributes());
-  // renderHuman(new locationAttributes({ location: [13, 1.0, 7], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 1, hairColor: [0, 0, 0, 1], shirtColor: [.5, .6, .5, 1], pantsColor: [.3, .3, .3, 1] }));
-  // renderHuman(new locationAttributes({ location: [8, 1.0, 5], rotation: [150, 0, 1, 0] }), new cosmeticAttributes({ hairType: 2, hairColor: [1, .8, 0, 1], shirtColor: [.6, .5, .5, 1], pantsColor: [.4, .4, .4, 1] }));
-  // renderHuman(new locationAttributes({ location: [15, 1.0, 17], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 1, hairColor: [77 / 255, 45 / 255, 26 / 255, 1], shirtColor: [.5, .5, .6, 1], pantsColor: [.3, .3, .3, 1] }));
-  // renderHuman(new locationAttributes({ location: [10, 1.0, 19], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 2, hairColor: [0, 0, 0, 1], shirtColor: [.5, .5, .6, 1], pantsColor: [.3, .3, .3, 1] }));
+  renderHuman(new locationAttributes({ location: [8, 1.0, -1], rotation: [90, 0, 1, 0] }), new cosmeticAttributes());
+  renderHuman(new locationAttributes({ location: [21, 1.0, 13], rotation: [180, 0, 1, 0] }), new cosmeticAttributes());
+  renderHuman(new locationAttributes({ location: [13, 1.0, 7], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 1, hairColor: [0, 0, 0, 1], shirtColor: [.5, .6, .5, 1], pantsColor: [.3, .3, .3, 1] }));
+  renderHuman(new locationAttributes({ location: [8, 1.0, 5], rotation: [150, 0, 1, 0] }), new cosmeticAttributes({ hairType: 2, hairColor: [1, .8, 0, 1], shirtColor: [.6, .5, .5, 1], pantsColor: [.4, .4, .4, 1] }));
+  renderHuman(new locationAttributes({ location: [15, 1.0, 17], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 1, hairColor: [77 / 255, 45 / 255, 26 / 255, 1], shirtColor: [.5, .5, .6, 1], pantsColor: [.3, .3, .3, 1] }));
+  renderHuman(new locationAttributes({ location: [10, 1.0, 19], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 2, hairColor: [0, 0, 0, 1], shirtColor: [.5, .5, .6, 1], pantsColor: [.3, .3, .3, 1] }));
 
   var cuber = new Cube();
   if (g_normalOn) cuber.textureNum = -3;
@@ -159,22 +159,24 @@ function renderScene() {
   cuber.renderFastUVNormal();
 
   var spherer = new Sphere();
-  spherer.matrix.translate(8, -.5, 0);
+  spherer.matrix.translate(8, -.3, 1);
+  spherer.matrix.scale(.7,.7,.7);
   spherer.textureNum = 0;
   if (g_normalOn) spherer.textureNum = -3;
   spherer.render();
 
   gl.uniform3f(u_lightPos, g_lightPos[0], g_lightPos[1], g_lightPos[2]);
   gl.uniform3f(u_cameraPos, g_eye.elements[0], g_eye.elements[1], g_eye.elements[2]);
+  gl.uniform3f(u_lightColor, g_lightColor[0], g_lightColor[1], g_lightColor[2]);
 
   gl.uniform1i(u_lightOn, g_lightOn);
   var light = new Cube();
   light.color = [2, 2, 0, 1];
   light.matrix.translate(g_lightPos[0], g_lightPos[1], g_lightPos[2]);
-  light.matrix.scale(-.1, -.1, -.1);
+  light.matrix.scale(-.15, -.15, -.15);
   light.matrix.translate(-.5, -.5, -.5);
   light.renderFastUVNormal();
-  //drawFloor();
+  drawFloor();
   drawSky();
 
   //drawMap();

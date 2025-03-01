@@ -53,6 +53,12 @@ function connectVariablesToGLSL() {
     console.log('Failed to get the storage location of u_lightPos');
     return;
   }
+
+  u_lightColor = gl.getUniformLocation(gl.program, 'u_lightColor');
+  if (!u_lightColor) {
+    console.log('Failed to get the storage location of u_lightColor');
+    return;
+  }
   u_lightOn = gl.getUniformLocation(gl.program, 'u_lightOn');
   if (!u_lightOn) {
     console.log('Failed to get the storage location of u_lightOn');
