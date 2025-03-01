@@ -11,12 +11,10 @@
   <canvas id="webgl" width="500" height="500">
     Please use a browser that supports "canvas"
   </canvas>
-  <pre style="color: black;">
-    Title: Hospital Unit D2
-  </pre>
+  <p>Title: Hospital Unit D2</p>
   <p id="fps">XXX</p>
   <!-- Clear Button -->
-  <label for="color-picker">Color:</label>
+  <label for="color-picker">Light Color:</label>
   <input type="color" value="#ffffff" id="color-picker" />
   Normal:
   <button type="button" id="normalOn">On</button>
@@ -24,13 +22,19 @@
   Light:
   <button type="button" id="lightOn">On</button>
   <button type="button" id="lightOff">Off</button>
+  <button type="button" id="spotlightOnOff">Spotlight On/Off</button>
+  <!-- SpotLight:
+  <button type="button" id="spotlightOn">On</button>
+  <button type="button" id="spotlightOff">Off</button> -->
   <br></br>
+  Light Animation:
+  <button type="button" id="lightAniOn">On</button>
+  <button type="button" id="lightAniOff">Off</button>
   Camera Perspetive Rotation:
   <button type="button" id="animationOn">On</button>
   <button type="button" id="animationOff">Off</button>
-  <br></br>
   <p>
-    Light X <input type="range" min="0" max="1000" value="700" class="slider" id="lightSlideX">
+    Light X <input type="range" min="0" max="1000" value="740" class="slider" id="lightSlideX">
     Light Y <input type="range" min="-150" max="350" value="180" class="slider" id="lightSlideY">
     Light Z <input type="range" min="-150" max="2000" value="20" class="slider" id="lightSlideZ">
   </p>

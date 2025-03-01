@@ -34,6 +34,8 @@ var FSHADER_SOURCE = `
   uniform bool u_lightOn;
   varying vec4 v_VertPos;
   uniform vec3 u_lightColor;
+  uniform vec3 u_lightDir;
+  uniform bool u_spotlightOn;
   void main() {
     if (u_whichTexture == -3) {
       gl_FragColor = vec4((v_Normal+1.0)/2.0, 1.0);
@@ -76,6 +78,21 @@ var FSHADER_SOURCE = `
         gl_FragColor = vec4(diffuse+ambient, 1.0);
       }
     }
+    // Spotlight
+    if (u_spotlightOn){
+      float wDotD = dot(normalize(u_lightDir), L);
+      if (wDotD > .86 ) {
+          float spotFac = pow(wDotD, 6.0);
+          // Lighting equation (diffuse + specular)
+
+          // Final color output with spotlight effect
+          gl_FragColor = vec4((ambient + diffuse + specular) * spotFac, 1.0);
+      } 
+      else {
+          // Spotlight is outside the cone, no light
+          gl_FragColor = vec4(ambient * .4, 1);
+      }
+    }
   }`;
 
 // Global Variables
@@ -99,6 +116,8 @@ let u_lightPos;
 let u_lightOn;
 let u_cameraPos;
 let u_lightColor;
+let u_lightDir;
+let u_spotlightOn;
 
 let g_globalAngleX = 0;
 let g_globalAngleY = 0;
@@ -106,9 +125,11 @@ let g_camera = false;
 let g_normalOn = false;
 let g_startTime = performance.now() / 1000.0;
 let g_seconds = 0;
-let g_lightPos = [7, 1.8, .2];
+let g_lightPos = [7.4, 1.8, .2];
 let g_lightOn = true;
-let g_lightColor = [1,1,1];
+let g_lightColor = [1, 1, 1];
+let g_lightAnimationOn = true;
+let g_spotlightOn = true;
 
 // let g_eye = new Vector3([-4, 0, 6]);
 // let g_at = new Vector3([0, 1, 1]);
@@ -160,16 +181,18 @@ function renderScene() {
 
   var spherer = new Sphere();
   spherer.matrix.translate(8, -.3, 1);
-  spherer.matrix.scale(.7,.7,.7);
+  spherer.matrix.scale(.7, .7, .7);
   spherer.textureNum = 0;
   if (g_normalOn) spherer.textureNum = -3;
   spherer.render();
 
   gl.uniform3f(u_lightPos, g_lightPos[0], g_lightPos[1], g_lightPos[2]);
+  gl.uniform3f(u_lightDir, 0,1,0);
   gl.uniform3f(u_cameraPos, g_eye.elements[0], g_eye.elements[1], g_eye.elements[2]);
   gl.uniform3f(u_lightColor, g_lightColor[0], g_lightColor[1], g_lightColor[2]);
 
   gl.uniform1i(u_lightOn, g_lightOn);
+  gl.uniform1i(u_spotlightOn, g_spotlightOn);
   var light = new Cube();
   light.color = [2, 2, 0, 1];
   light.matrix.translate(g_lightPos[0], g_lightPos[1], g_lightPos[2]);
@@ -223,7 +246,6 @@ function sendImageToTEXTURE0(image, textureUnit, sampler) {
 
   // Set the texture unit 0 to the sampler
   gl.uniform1i(sampler, textureUnit);
-  console.log('finished loadTexture');
 }
 
 function keydown(ev) {
@@ -279,7 +301,9 @@ function keydown(ev) {
 function tick() {
   g_seconds = (performance.now() / 1000.0) - g_startTime;
   renderScene();
-  //g_lightPos[2] = 2 * Math.cos(g_seconds);
+  if (g_lightAnimationOn) {
+    g_lightPos[2] = 1 * Math.cos(g_seconds);
+  }
   requestAnimationFrame(tick);
 }
 function main() {

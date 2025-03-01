@@ -19,8 +19,12 @@ function addActionsForHtmlUI() {
     document.getElementById('animationOff').onclick = function () { g_camera = false; };
     document.getElementById('normalOn').onclick = function () { g_normalOn = true; };
     document.getElementById('normalOff').onclick = function () { g_normalOn = false; };
-    document.getElementById('lightOn').onclick = function () { g_lightOn = true; };
-    document.getElementById('lightOff').onclick = function () { g_lightOn = false; };
+    document.getElementById('lightOn').onclick = function () { g_lightOn = true; g_spotlightOn = false;};
+    document.getElementById('lightOff').onclick = function () { g_lightOn = false; g_spotlightOn = false };
+    document.getElementById('spotlightOnOff').onclick = function () { g_spotlightOn = !g_spotlightOn; };
+    //document.getElementById('spotlightOff').onclick = function () { g_spotlightOn = false; };
+    document.getElementById('lightAniOn').onclick = function () { g_lightAnimationOn = true; };
+    document.getElementById('lightAniOff').onclick = function () { g_lightAnimationOn = false; };
     document.getElementById('lightSlideX').addEventListener('mousemove', function (ev) { if (ev.buttons == 1) { g_lightPos[0] = this.value / 100; renderScene(); } });
     document.getElementById('lightSlideY').addEventListener('mousemove', function (ev) { if (ev.buttons == 1) { g_lightPos[1] = this.value / 100; renderScene(); } });
     document.getElementById('lightSlideZ').addEventListener('mousemove', function (ev) { if (ev.buttons == 1) { g_lightPos[2] = this.value / 100; renderScene(); } });
