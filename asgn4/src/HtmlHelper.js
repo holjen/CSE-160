@@ -29,7 +29,5 @@ function addActionsForHtmlUI() {
         g_lightColor[0] = rgb.r/255;
         g_lightColor[1] = rgb.g/255;
         g_lightColor[2] = rgb.b/255;
-        console.log(rgb);
-        console.log(g_lightColor);
     })
 }

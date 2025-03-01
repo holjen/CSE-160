@@ -152,11 +152,11 @@ function renderScene() {
   renderHuman(new locationAttributes({ location: [15, 1.0, 17], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 1, hairColor: [77 / 255, 45 / 255, 26 / 255, 1], shirtColor: [.5, .5, .6, 1], pantsColor: [.3, .3, .3, 1] }));
   renderHuman(new locationAttributes({ location: [10, 1.0, 19], rotation: [-90, 0, 1, 0] }), new cosmeticAttributes({ hairType: 2, hairColor: [0, 0, 0, 1], shirtColor: [.5, .5, .6, 1], pantsColor: [.3, .3, .3, 1] }));
 
-  var cuber = new Cube();
-  if (g_normalOn) cuber.textureNum = -3;
-  cuber.matrix.translate(6, -1, -2);
-  cuber.matrix.scale(.6, .6, .4);
-  cuber.renderFastUVNormal();
+  // var cuber = new Cube();
+  // if (g_normalOn) cuber.textureNum = -3;
+  // cuber.matrix.translate(6, -1, -2);
+  // cuber.matrix.scale(.6, .6, .4);
+  // cuber.renderFastUVNormal();
 
   var spherer = new Sphere();
   spherer.matrix.translate(8, -.3, 1);
@@ -179,7 +179,7 @@ function renderScene() {
   drawFloor();
   drawSky();
 
-  //drawMap();
+  drawMap();
   var duration = performance.now() - startTime;
   sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000 / duration) / 10, "fps");
 }
