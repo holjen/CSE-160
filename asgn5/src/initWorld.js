@@ -12,9 +12,10 @@ function setUpCamera() {
     const fov = 75;
     const aspect = canvas.clientWidth / canvas.clientHeight;
     const near = 0.1;
-    const far = 5;
+    const far = 100;
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.z = 4;
+    camera.position.z = 6;
+    camera.position.y = 2;
     controls = new OrbitControls(camera, canvas);
 }
 function updateCamera() {
@@ -22,26 +23,26 @@ function updateCamera() {
 }
 class MinMaxGUIHelper {
     constructor(obj, minProp, maxProp, minDif) {
-      this.obj = obj;
-      this.minProp = minProp;
-      this.maxProp = maxProp;
-      this.minDif = minDif;
+        this.obj = obj;
+        this.minProp = minProp;
+        this.maxProp = maxProp;
+        this.minDif = minDif;
     }
     get min() {
-      return this.obj[this.minProp];
+        return this.obj[this.minProp];
     }
     set min(v) {
-      this.obj[this.minProp] = v;
-      this.obj[this.maxProp] = Math.max(this.obj[this.maxProp], v + this.minDif);
+        this.obj[this.minProp] = v;
+        this.obj[this.maxProp] = Math.max(this.obj[this.maxProp], v + this.minDif);
     }
     get max() {
-      return this.obj[this.maxProp];
+        return this.obj[this.maxProp];
     }
     set max(v) {
-      this.obj[this.maxProp] = v;
-      this.min = this.min;  // this will call the min setter
+        this.obj[this.maxProp] = v;
+        this.min = this.min;  // this will call the min setter
     }
-  }
+}
 // Resize canvas
 export function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
@@ -54,6 +55,17 @@ export function resizeRendererToDisplaySize(renderer) {
     return needResize;
 }
 
+// Background
+function loadBackground() {
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(
+        '../resources/background/nebula.png',
+        () => {
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+            texture.colorSpace = THREE.SRGBColorSpace;
+            scene.background = texture;
+        });
+}
 
 export function initializeWorld() {
     canvas = document.querySelector('#c');
@@ -61,14 +73,16 @@ export function initializeWorld() {
         antialias: true,
         canvas,
         logarithmicDepthBuffer: true,
-      });
+        alpha: true,
+    });
     scene = new THREE.Scene();
-    
+
     setUpCamera();
     const gui = new GUI();
-gui.add(camera, 'fov', 1, 180).onChange(updateCamera);
-const minMaxGUIHelper = new MinMaxGUIHelper(camera, 'near', 'far', 0.1);
-gui.add(minMaxGUIHelper, 'min', 0.1, 50, 0.1).name('near').onChange(updateCamera);
-gui.add(minMaxGUIHelper, 'max', 0.1, 50, 0.1).name('far').onChange(updateCamera);
+    gui.add(camera, 'fov', 1, 180).onChange(updateCamera);
+    const minMaxGUIHelper = new MinMaxGUIHelper(camera, 'near', 'far', 0.1);
+    gui.add(minMaxGUIHelper, 'min', 0.1, 50, 0.1).name('near').onChange(updateCamera);
+    gui.add(minMaxGUIHelper, 'max', 0.1, 50, 0.1).name('far').onChange(updateCamera);
     addLight(scene);
+    loadBackground();
 }
