@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { addLight } from './light.js';
+import { addAmbientLight, addDirectionalLight, addHemiLight } from './light.js';
 export let canvas;
 export let renderer;
 export let scene;
@@ -14,8 +14,8 @@ function setUpCamera() {
     const near = 0.1;
     const far = 100;
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.z = 6;
-    camera.position.y = 2;
+    camera.position.z = 5;
+    camera.position.y = 2.5; // look from above
     controls = new OrbitControls(camera, canvas);
 }
 function updateCamera() {
@@ -40,7 +40,7 @@ class MinMaxGUIHelper {
     }
     set max(v) {
         this.obj[this.maxProp] = v;
-        this.min = this.min;  // this will call the min setter
+        this.min = this.min;  
     }
 }
 // Resize canvas
@@ -83,6 +83,8 @@ export function initializeWorld() {
     const minMaxGUIHelper = new MinMaxGUIHelper(camera, 'near', 'far', 0.1);
     gui.add(minMaxGUIHelper, 'min', 0.1, 50, 0.1).name('near').onChange(updateCamera);
     gui.add(minMaxGUIHelper, 'max', 0.1, 50, 0.1).name('far').onChange(updateCamera);
-    addLight(scene);
+    addAmbientLight(scene);
+    addDirectionalLight(scene);
+    addHemiLight(scene);
     loadBackground();
 }

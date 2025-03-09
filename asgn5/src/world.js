@@ -1,8 +1,8 @@
 import { initializeWorld, resizeRendererToDisplaySize, canvas, camera, scene, renderer } from './initWorld.js';
-import { loadCakeObj } from './objects.js';
 import { loadCubes, spinCubes } from './cubes.js';
-import { createTable } from './shapes.js';
-import { loadFloor } from './shapes.js';
+import { createTableScene } from './tableScene.js';
+import { loadFloor } from './tableScene.js';
+import * as THREE from 'three';
 
 let cubes;
 function render(time) {
@@ -12,7 +12,7 @@ function render(time) {
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
   }
-  spinCubes(cubes, time);
+  //spinCubes(cubes, time);
 
   renderer.render(scene, camera);
 
@@ -21,10 +21,9 @@ function render(time) {
 
 function main() {
   initializeWorld();
-  loadCakeObj(scene);
-  cubes = loadCubes();
+  //cubes = loadCubes();
   loadFloor( -7);
-  createTable();
+  createTableScene();
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 }
