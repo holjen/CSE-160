@@ -3,7 +3,7 @@ import { drawTableObjs } from './tableObjects.js';
 import { scene } from "./initWorld.js";
 
 
-export var heightOfTable =1;
+export var heightOfTable =1.2;
 var heightOfTableFoot = 3;
 
 export function loadFloor(y) {
@@ -47,6 +47,19 @@ function createTableFoot(color) {
     scene.add(tableFoot);
 }
 
+function createTableStand(color) {
+    const radiusTop = .4;
+    const radiusBottom = 1.5;
+    const height = .5;
+    const radialSegments = 20;
+    const geometry = new THREE.CylinderGeometry(
+        radiusTop, radiusBottom, height, radialSegments);
+    const material = new THREE.MeshPhongMaterial({color});
+    const tableStand = new THREE.Mesh(geometry, material);
+    tableStand.position.y = -1.8;
+    scene.add(tableStand);
+}
+
 function createChair(chairX, chairY, chairZ, xRot, yRot, zRot, color) {
     const shape = new THREE.Shape();
     const x = 0;
@@ -82,14 +95,31 @@ function createChair(chairX, chairY, chairZ, xRot, yRot, zRot, color) {
     scene.add(heart);
 }
 
+function createChairLeg(x,z, color) {
+    const radiusTop = .05;
+    const radiusBottom = .25;
+    const height = 2;
+    const radialSegments = 15;
+    const geometry = new THREE.CylinderGeometry(
+        radiusTop, radiusBottom, height, radialSegments);
+    const material = new THREE.MeshPhongMaterial({color});
+    const chairLeg = new THREE.Mesh(geometry, material);
+    chairLeg.position.x = x;
+    chairLeg.position.z = z;
+    chairLeg.position.y = -1;
+    scene.add(chairLeg);
+}
 export function createTableScene() {
     var tableColor = 0xa3d1d6;
     var chairColor = 0xeac9ff;
     createTableSurface(tableColor);
     createTableFoot(tableColor);
-    createChair(-6, -.5, 0, Math.PI/2, 0, -Math.PI/4 , chairColor);
-    createChair(6, -.5, -1, Math.PI/2, 0, Math.PI/4, chairColor);
-    createChair(-6, 1.2, 0, Math.PI/1, -Math.PI/4 , 0, chairColor);
-    createChair(6, 1.2, -1, Math.PI/1, Math.PI/4 , 0, chairColor);
-    drawTableObjs(1);
+    createTableStand(tableColor);
+    createChair(-6, heightOfTable-1, 0, Math.PI/2, 0, -Math.PI/4 , chairColor);
+    createChair(6, heightOfTable-1, -1, Math.PI/2, 0, Math.PI/4, chairColor);
+    createChair(-6, heightOfTable+ .7, 0, Math.PI/1, -Math.PI/4 , 0, chairColor);
+    createChair(6, heightOfTable+ .7, -1, Math.PI/1, Math.PI/4 , 0, chairColor);
+    createChairLeg(-5.5,0,0xe6bdff);
+    createChairLeg(6,-.5,0xe6bdff);
+    drawTableObjs(heightOfTable);
 }

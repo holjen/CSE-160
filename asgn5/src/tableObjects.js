@@ -9,7 +9,6 @@ function loadCakeObj(y) {
         mtl.preload();
         objLoader.setMaterials(mtl);
         objLoader.load('../resources/objects/cake/tinker.obj', (cakeObj) => {
-            console.log("model loaded")
             cakeObj.scale.set(0.015, 0.015, 0.015);
             cakeObj.rotation.x = - Math.PI / 2;
             cakeObj.position.y = y;
@@ -27,7 +26,6 @@ function highTea(y) {
         mtl.preload();
         objLoader.setMaterials(mtl);
         objLoader.load('../resources/objects/highTea/model.obj', (highTeaObj) => {
-            console.log("model loaded")
             highTeaObj.scale.set(3.3, 3.3, 3.3);
             highTeaObj.position.y = y;
             highTeaObj.position.x = -1.5;
@@ -43,7 +41,6 @@ function cupOfTea(x, y, z, rotY) {
         mtl.preload();
         objLoader.setMaterials(mtl);
         objLoader.load('../resources/objects/cupOfTea/cupOfTea.obj', (teacupObj) => {
-            console.log("model loaded")
             teacupObj.rotation.y = rotY;
             teacupObj.scale.set(.2, .2, .2);
             teacupObj.position.y = y;
@@ -57,7 +54,6 @@ function cupOfTea(x, y, z, rotY) {
 function teapot(y) {
     const objLoader = new OBJLoader();
     objLoader.load('../resources/objects/teapot/model.obj', (teapot) => {
-        console.log("model loaded");
     
         teapot.traverse((child) => {
             if (child.isMesh) {

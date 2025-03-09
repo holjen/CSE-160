@@ -4,6 +4,7 @@ import { createTableScene } from './tableScene.js';
 import { loadFloor } from './tableScene.js';
 import * as THREE from 'three';
 import { drawClouds, moveClouds } from './cloud.js';
+import { drawStars } from './star.js';
 let cubes;
 let clouds;
 function render(time) {
@@ -26,6 +27,7 @@ function main() {
   loadFloor( -7);
   createTableScene();
   clouds = drawClouds();
+  drawStars();
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 }

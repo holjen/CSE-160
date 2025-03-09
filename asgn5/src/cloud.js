@@ -6,14 +6,17 @@ export function moveClouds(clouds, time) {
         console.error("Expected clouds to be an array, but got:", clouds);
         return;
     }
+
     clouds.forEach((cloud) => {
-        cloud.forEach((cloudPart, ndx) => {
+        // Destructure the cloud tuple to get cloudPart and dir
+        const [cloudParts, dir] = cloud;
+
+        cloudParts.forEach((cloudPart, ndx) => {
             const speed = 1 + ndx * .1;
             const rot = time * speed * .5;
             cloudPart.rotation.y = rot;
-            //cloudPart.rotation.y = rot;
-            cloudPart.position.y += Math.cos(time) * .02;
-            cloudPart.position.x += Math.cos(time) * .08;
+            cloudPart.position.y += dir * Math.cos(time) * .02;
+            cloudPart.position.x += dir * Math.cos(time) * .08;
         });
     });
 }
@@ -42,8 +45,8 @@ function drawSmallCloud(x, y, z, scaleX, scaleY, scaleZ) {
 
 export function drawClouds() {
     const clouds = [
-        drawSmallCloud(-5, 10, -15, .5, .5, .5)
+        [drawSmallCloud(-5, 10, -15, .5, .5, .5), .7],
+        [drawSmallCloud(2, 6, -35, .4, .4, .4), -.5]
     ]
-    console.log(clouds);
     return clouds;
 }
